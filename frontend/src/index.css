@@ -26,46 +26,6 @@
     box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.5);
   }
 
-  .theme-dark .glass-input {
-    background: #061b27;
-    border: 1px solid #18485e;
-    color: #f8fafc;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .theme-dark .glass-input:focus {
-    border-color: #56e3ce;
-    box-shadow: 0 0 0 2px rgba(86, 227, 206, 0.25);
-  }
-
-  .theme-dark .glass-select {
-    background: #061b27;
-    border: 1px solid #56e3ce;
-    color: #56e3ce;
-    font-weight: 700;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .theme-dark .glass-option-btn {
-    background: #061b27;
-    border: 1px solid #18485e;
-    color: #94d2bd;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .theme-dark .glass-option-btn:hover {
-    background: #09222f;
-    border-color: #56e3ce;
-    color: #ffffff;
-  }
-
-  .theme-dark .glass-option-active {
-    background: linear-gradient(135deg, #005f73 0%, #0a9396 100%);
-    border: 1px solid #56e3ce;
-    box-shadow: 0 4px 14px 0 rgba(86, 227, 206, 0.35);
-    color: #ffffff;
-  }
-
   /* Clean White Theme Style Rules */
   .theme-light {
     background-color: #f1f5f9 !important;
@@ -114,6 +74,37 @@
     border-bottom: 2px solid #18485e !important;
     color: #94d2bd !important;
   }
+}
+
+/* Universal White Theme High-Contrast Text Rules */
+.theme-light .text-white,
+.theme-light .text-slate-100,
+.theme-light .text-slate-200,
+.theme-light .text-slate-300 {
+  color: #0f172a !important;
+}
+
+.theme-light .text-slate-400,
+.theme-light .text-slate-500 {
+  color: #475569 !important;
+}
+
+.theme-light .text-cyan-300,
+.theme-light .text-cyan-400 {
+  color: #0f766e !important;
+}
+
+/* Retain White Text on Dark Solid Buttons ONLY */
+.theme-light button.bg-gradient-to-r *,
+.theme-light button.bg-teal-600 *,
+.theme-light button.bg-emerald-600 *,
+.theme-light button.bg-cyan-600 *,
+.theme-light button.bg-rose-500 *,
+.theme-light button.bg-slate-700 *,
+.theme-light .bg-gradient-to-r,
+.theme-light .bg-teal-600,
+.theme-light .bg-emerald-600 {
+  color: #ffffff !important;
 }
 
 body {

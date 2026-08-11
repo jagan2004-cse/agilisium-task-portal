@@ -21,13 +21,14 @@ import {
 } from 'lucide-react';
 import { codeReviewAPI } from '../api';
 
-export default function PresentationRotationWorkspace({ user }) {
+export default function PresentationRotationWorkspace({ user, theme = localStorage.getItem('theme') || 'dark' }) {
   const [dashboardData, setDashboardData] = useState(null);
   const [membersStatus, setMembersStatus] = useState([]);
   const [cycleHistory, setCycleHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('today'); // 'today', 'members', 'daily', 'cycles'
   const [searchQuery, setSearchQuery] = useState('');
+  const isLight = theme === 'light';
 
   // Single Add Modal State
   const [showAddModal, setShowAddModal] = useState(false);
@@ -224,15 +225,17 @@ export default function PresentationRotationWorkspace({ user }) {
   return (
     <div className="space-y-6">
       {/* 🌟 Header Banner */}
-      <div className="glass-card rounded-3xl p-6 bg-slate-800 border border-slate-700 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className={`rounded-3xl p-6 border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all ${
+        isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+      }`}>
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">Code Explanation & Review Manager</span>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+            <span className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-teal-700' : 'text-cyan-400'}`}>Code Explanation & Review Manager</span>
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/20 text-cyan-600 border border-cyan-500/40">
               Cycle #{cycle.cycle_number || 1} • In Progress
             </span>
           </div>
-          <h2 className="text-2xl font-bold text-white mt-1">Data Engineering Code Review Dashboard</h2>
+          <h2 className={`text-2xl font-bold mt-1 ${isLight ? 'text-slate-900' : 'text-white'}`}>Data Engineering Code Review Dashboard</h2>
         </div>
 
         {user?.role !== 'USER' && (
@@ -242,9 +245,11 @@ export default function PresentationRotationWorkspace({ user }) {
                 setErrorMessage('');
                 setShowAddModal(true);
               }}
-              className="px-4 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs border border-slate-600 flex items-center gap-2 cursor-pointer transition"
+              className={`px-4 py-2.5 rounded-xl font-bold text-xs border flex items-center gap-2 cursor-pointer transition ${
+                isLight ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-slate-700 hover:bg-slate-600 text-white border-slate-600'
+              }`}
             >
-              <UserPlus className="w-4 h-4 text-cyan-400" />
+              <UserPlus className="w-4 h-4 text-cyan-600" />
               <span>+ Insert One-by-One</span>
             </button>
 
@@ -264,42 +269,50 @@ export default function PresentationRotationWorkspace({ user }) {
 
       {/* 📊 KPI Summary Matrix Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-card p-5 rounded-2xl border-l-4 border-cyan-400 bg-slate-800/80">
+        <div className={`p-5 rounded-2xl border-l-4 border-teal-500 border transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+        }`}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Batch Members</span>
-            <Users className="w-5 h-5 text-cyan-400" />
+            <span className={`text-xs font-semibold uppercase tracking-wider ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Total Batch Members</span>
+            <Users className="w-5 h-5 text-teal-600" />
           </div>
-          <p className="text-3xl font-extrabold text-white mt-2">{totalMembers}</p>
-          <p className="text-[11px] text-cyan-300 mt-1">Data Engineering & AI Batch</p>
+          <p className={`text-3xl font-extrabold mt-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>{totalMembers}</p>
+          <p className="text-[11px] text-teal-700 font-semibold mt-1">Data Engineering & AI Batch</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl border-l-4 border-emerald-400 bg-slate-800/80">
+        <div className={`p-5 rounded-2xl border-l-4 border-emerald-500 border transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+        }`}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Completed Explanations</span>
-            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+            <span className={`text-xs font-semibold uppercase tracking-wider ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Completed Explanations</span>
+            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
           </div>
-          <p className="text-3xl font-extrabold text-white mt-2">{completedCount}</p>
-          <p className="text-[11px] text-emerald-300 mt-1">Finished in Cycle #{cycle.cycle_number || 1}</p>
+          <p className={`text-3xl font-extrabold mt-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>{completedCount}</p>
+          <p className="text-[11px] text-emerald-700 font-semibold mt-1">Finished in Cycle #{cycle.cycle_number || 1}</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl border-l-4 border-amber-400 bg-slate-800/80">
+        <div className={`p-5 rounded-2xl border-l-4 border-amber-500 border transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+        }`}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pending Members</span>
-            <Clock className="w-5 h-5 text-amber-400" />
+            <span className={`text-xs font-semibold uppercase tracking-wider ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Pending Members</span>
+            <Clock className="w-5 h-5 text-amber-500" />
           </div>
-          <p className="text-3xl font-extrabold text-white mt-2">{pendingCount}</p>
-          <p className="text-[11px] text-amber-300 mt-1">Remaining for Cycle Completion</p>
+          <p className={`text-3xl font-extrabold mt-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>{pendingCount}</p>
+          <p className="text-[11px] text-amber-700 font-semibold mt-1">Remaining for Cycle Completion</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl border-l-4 border-purple-400 bg-slate-800/80">
+        <div className={`p-5 rounded-2xl border-l-4 border-purple-500 border transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+        }`}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Cycle Progress</span>
-            <Sparkles className="w-5 h-5 text-purple-400" />
+            <span className={`text-xs font-semibold uppercase tracking-wider ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Cycle Progress</span>
+            <Sparkles className="w-5 h-5 text-purple-600" />
           </div>
-          <p className="text-3xl font-extrabold text-white mt-2">{progressPct}%</p>
-          <div className="w-full bg-slate-700 h-2 rounded-full mt-2 overflow-hidden">
+          <p className={`text-3xl font-extrabold mt-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>{progressPct}%</p>
+          <div className={`w-full h-2 rounded-full mt-2 overflow-hidden ${isLight ? 'bg-slate-200' : 'bg-slate-700'}`}>
             <div 
-              className="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-teal-500 to-emerald-500 h-full rounded-full transition-all duration-500"
               style={{ width: `${progressPct}%` }}
             ></div>
           </div>
@@ -307,26 +320,30 @@ export default function PresentationRotationWorkspace({ user }) {
       </div>
 
       {/* ⚡ Today's Highlights Summary Strip */}
-      <div className="glass-card rounded-2xl p-4 bg-slate-900/60 border border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className={`rounded-2xl p-4 border flex flex-col sm:flex-row items-center justify-between gap-4 transition-all ${
+        isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+      }`}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
+            isLight ? 'bg-teal-50 border-teal-200 text-teal-700' : 'bg-cyan-500/20 border-cyan-500/30 text-cyan-400'
+          }`}>
             <Calendar className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block">Today's Summary</span>
-            <p className="text-sm font-bold text-white">
-              <span className="text-cyan-300 font-extrabold">{todayCount} members</span> completed code explanations today
+            <span className={`text-[11px] font-semibold uppercase tracking-wider block ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Today's Summary</span>
+            <p className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              <span className="text-teal-700 font-extrabold">{todayCount} members</span> completed code explanations today
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-4 text-xs font-bold">
-          <span className="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5" />
+          <span className="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-700 border border-emerald-500/30 flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
             <span>Today's Done: {todayCount}</span>
           </span>
-          <span className="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5" />
+          <span className="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-700 border border-amber-500/30 flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
             <span>Remaining in Cycle: {pendingCount}</span>
           </span>
         </div>

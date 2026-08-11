@@ -43,9 +43,10 @@ const SLICE_COLORS = [
   '#65a30d', '#0d9488', '#0284c7', '#4f46e5'
 ];
 
-export default function LuckySpinWheel() {
+export default function LuckySpinWheel({ theme = localStorage.getItem('theme') || 'dark' }) {
   const [namesText, setNamesText] = useState(DEFAULT_28_NAMES.join('\n'));
   const [participants, setParticipants] = useState(DEFAULT_28_NAMES);
+  const isLight = theme === 'light';
   
   // Controls & State
   const [isSpinning, setIsSpinning] = useState(false);
@@ -252,19 +253,23 @@ export default function LuckySpinWheel() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-card rounded-3xl p-6 bg-gradient-to-r from-cyan-950/60 via-purple-950/40 to-slate-900/60 border border-cyan-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className={`rounded-3xl p-6 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all ${
+        isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+      }`}>
         <div>
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-cyan-400" />
-            <h1 className="text-2xl font-bold text-white tracking-tight">Lucky Wheel</h1>
+            <Sparkles className="w-5 h-5 text-teal-600" />
+            <h1 className={`text-2xl font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>Lucky Wheel</h1>
           </div>
-          <p className="text-xs text-slate-300 mt-1">Spin to randomly select all 28 people one by one until everyone is picked.</p>
+          <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Spin to randomly select all 28 people one by one until everyone is picked.</p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setShowResetConfirm(true)}
-            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer border border-white/20 transition"
+            className={`px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer border transition ${
+              isLight ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+            }`}
           >
             <RotateCcw className="w-4 h-4" />
             <span>Reset 28 Names</span>
@@ -276,9 +281,11 @@ export default function LuckySpinWheel() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* LEFT COLUMN — LUCKY WHEEL CANVAS (7 cols) */}
-        <div className="lg:col-span-7 glass-card rounded-3xl p-8 flex flex-col items-center justify-center relative overflow-hidden border border-white/15 min-h-[520px]">
+        <div className={`lg:col-span-7 rounded-3xl p-8 flex flex-col items-center justify-center relative overflow-hidden border min-h-[520px] transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+        }`}>
           {/* Pointer Arrow fixed at TOP */}
-          <div className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[26px] border-t-cyan-400 absolute top-5 z-20 drop-shadow-[0_4px_12px_rgba(6,182,212,0.9)]" />
+          <div className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[26px] border-t-teal-600 absolute top-5 z-20 drop-shadow-[0_4px_12px_rgba(13,148,136,0.8)]" />
 
           {/* Wheel Canvas */}
           <canvas
@@ -297,7 +304,7 @@ export default function LuckySpinWheel() {
                 ? 'bg-purple-600 text-white animate-pulse'
                 : winner
                 ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/30'
-                : 'bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 text-white shadow-cyan-500/30'
+                : 'bg-gradient-to-r from-teal-600 via-indigo-600 to-purple-600 text-white shadow-teal-500/30'
             }`}
           >
             <Dices className={`w-6 h-6 ${isSpinning ? 'animate-spin' : ''}`} />
@@ -308,16 +315,22 @@ export default function LuckySpinWheel() {
         </div>
 
         {/* RIGHT COLUMN — NAME MANAGER PANEL (5 cols) */}
-        <div className="lg:col-span-5 glass-card rounded-3xl p-6 space-y-4 border border-white/15">
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-              <Users className="w-4 h-4 text-cyan-400" />
+        <div className={`lg:col-span-5 rounded-3xl p-6 space-y-4 border transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+        }`}>
+          <div className={`flex items-center justify-between border-b pb-3 ${
+            isLight ? 'border-slate-200' : 'border-white/10'
+          }`}>
+            <h3 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+              isLight ? 'text-slate-900' : 'text-white'
+            }`}>
+              <Users className="w-4 h-4 text-teal-600" />
               <span>Participants Remaining ({nameCount} / 28)</span>
             </h3>
 
             {/* Validation Badge */}
             <span className={`text-[11px] font-extrabold px-3 py-1 rounded-full border ${
-              isValid ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' :
+              isValid ? 'bg-emerald-500/20 text-emerald-700 border-emerald-500/40' :
               nameCount === 0 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' :
               'bg-rose-500/20 text-rose-300 border-rose-500/40'
             }`}>
@@ -340,7 +353,9 @@ export default function LuckySpinWheel() {
               value={namesText}
               onChange={(e) => setNamesText(e.target.value)}
               placeholder="Enter participant names line-by-line..."
-              className="w-full p-3.5 rounded-2xl glass-input text-xs font-semibold text-white outline-none font-mono focus:ring-2 focus:ring-cyan-400 leading-relaxed"
+              className={`w-full p-3.5 rounded-2xl text-xs font-semibold outline-none font-mono leading-relaxed border transition ${
+                isLight ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400' : 'bg-[#061b27] border-[#18485e] text-white placeholder:text-slate-500'
+              }`}
             />
           </div>
 
@@ -348,13 +363,15 @@ export default function LuckySpinWheel() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleUpdateWheel}
-              className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 font-bold text-xs text-white shadow-lg cursor-pointer hover:from-cyan-400"
+              className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 font-bold text-xs text-white shadow-lg cursor-pointer hover:from-teal-500"
             >
               Update Wheel
             </button>
             <button
               onClick={handleShuffleNames}
-              className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 font-bold text-xs text-slate-200 border border-white/20 flex items-center gap-1.5 cursor-pointer"
+              className={`py-2.5 px-4 rounded-xl font-bold text-xs border flex items-center gap-1.5 cursor-pointer ${
+                isLight ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-white/10 hover:bg-white/20 text-slate-200 border-white/20'
+              }`}
             >
               <Shuffle className="w-3.5 h-3.5" />
               <span>Shuffle</span>
@@ -362,13 +379,15 @@ export default function LuckySpinWheel() {
           </div>
 
           {/* Toggle Remove Winner */}
-          <label className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 text-xs text-slate-300 cursor-pointer">
+          <label className={`flex items-center justify-between p-3 rounded-2xl border text-xs cursor-pointer ${
+            isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-white/5 border-white/10 text-slate-300'
+          }`}>
             <span className="font-medium">Remove winner after spin</span>
             <input
               type="checkbox"
               checked={removeWinnerAfterSpin}
               onChange={(e) => setRemoveWinnerAfterSpin(e.target.checked)}
-              className="w-4 h-4 accent-cyan-500 cursor-pointer"
+              className="w-4 h-4 accent-teal-600 cursor-pointer"
             />
           </label>
         </div>
@@ -376,16 +395,22 @@ export default function LuckySpinWheel() {
       </div>
 
       {/* BOTTOM SECTION — WINNER HISTORY */}
-      <div className="glass-card rounded-2xl p-6 border border-white/15">
-        <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
-          <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <History className="w-4 h-4 text-cyan-400" />
+      <div className={`rounded-2xl p-6 border transition-all ${
+        isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+      }`}>
+        <div className={`flex items-center justify-between border-b pb-3 mb-3 ${
+          isLight ? 'border-slate-200' : 'border-white/10'
+        }`}>
+          <h3 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
+            isLight ? 'text-slate-900' : 'text-white'
+          }`}>
+            <History className="w-4 h-4 text-teal-600" />
             <span>Winner History ({winnerHistory.length} / 28 Picked)</span>
           </h3>
           {winnerHistory.length > 0 && (
             <button
               onClick={() => setWinnerHistory([])}
-              className="text-xs text-rose-400 hover:underline flex items-center gap-1 font-semibold"
+              className="text-xs text-rose-500 hover:underline flex items-center gap-1 font-semibold"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear History</span>
@@ -394,12 +419,14 @@ export default function LuckySpinWheel() {
         </div>
 
         {winnerHistory.length === 0 ? (
-          <p className="text-xs text-slate-400 py-3 text-center">No winners picked yet. Spin the wheel!</p>
+          <p className={`text-xs py-3 text-center ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>No winners picked yet. Spin the wheel!</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {winnerHistory.map((name, idx) => (
-              <span key={idx} className="px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-xs text-cyan-300 font-bold flex items-center gap-1.5">
-                <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <span key={idx} className={`px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5 border ${
+                isLight ? 'bg-teal-50 text-teal-900 border-teal-200' : 'bg-white/10 border-white/15 text-cyan-300'
+              }`}>
+                <Trophy className="w-3.5 h-3.5 text-amber-500" />
                 <span>#{winnerHistory.length - idx}: {name}</span>
               </span>
             ))}
