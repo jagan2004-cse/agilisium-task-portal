@@ -13,7 +13,7 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
   // Form State for New Task Creation
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState('');
-  const [allowedFormat, setAllowedFormat] = useState('ANY');
+  const [allowedFormat, setAllowedFormat] = useState('DOC');
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurrenceType, setRecurrenceType] = useState('NONE');
   const [dueDate, setDueDate] = useState(new Date().toISOString().split('T')[0]);
@@ -53,11 +53,11 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
         setUserAssignments(results[3].data || []);
       }
 
-      // Default selected category to "Tasks"
+      // Default selected category to "Tasks" with default format DOC
       if (loadedCats.length > 0 && !categoryId) {
         const tasksCat = loadedCats.find(c => c.name.toLowerCase() === 'tasks') || loadedCats[0];
         setCategoryId(tasksCat.id);
-        setAllowedFormat('PPT');
+        setAllowedFormat('DOC');
         setIsRecurring(false);
         setRecurrenceType('NONE');
       }
@@ -79,13 +79,13 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
         setIsRecurring(false);
         setRecurrenceType('NONE');
         setDueTime('18:00');
-      } else if (nameLower.includes('assessment') || nameLower === 'tasks') {
-        setAllowedFormat('PPT');
+      } else if (nameLower === 'tasks' || nameLower.includes('tech updates') || nameLower.includes('public speaking')) {
+        setAllowedFormat('DOC');
         setIsRecurring(false);
         setRecurrenceType('NONE');
         setDueTime('18:00');
-      } else if (nameLower.includes('tech updates') || nameLower.includes('public speaking')) {
-        setAllowedFormat('DOC');
+      } else if (nameLower.includes('assessment')) {
+        setAllowedFormat('PPT');
         setIsRecurring(false);
         setRecurrenceType('NONE');
         setDueTime('18:00');
@@ -181,7 +181,7 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
     setTitle('');
     const tasksCat = categories.find(c => c.name.toLowerCase() === 'tasks') || categories[0];
     setCategoryId(tasksCat?.id || '');
-    setAllowedFormat('PPT');
+    setAllowedFormat('DOC');
     setIsRecurring(false);
     setRecurrenceType('NONE');
     setDueDate(new Date().toISOString().split('T')[0]);
