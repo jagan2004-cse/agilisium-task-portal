@@ -204,10 +204,16 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey, the
     .filter(a => ['PENDING_APPROVAL', 'SUBMITTED', 'APPROVED', 'COMPLETED'].includes(a.status))
     .map(a => a.task_details?.id || a.task);
 
-  // Filter tasks: Regular users ONLY see tasks where evidence has NOT yet been submitted for the current cycle!
-  const visibleTasks = user?.role === 'USER'
-    ? tasks.filter(t => !submittedTaskIds.includes(t.id))
-    : tasks;
+  // Filter tasks: Strictly filter by selectedCategory pill + user submission status
+  const visibleTasks = tasks.filter(t => {
+    if (selectedCategory && String(t.category) !== String(selectedCategory) && String(t.category_id) !== String(selectedCategory)) {
+      return false;
+    }
+    if (user?.role === 'USER') {
+      return !submittedTaskIds.includes(t.id);
+    }
+    return true;
+  });
 
   const isLight = theme === 'light';
 

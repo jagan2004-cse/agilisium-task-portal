@@ -17,6 +17,13 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all().order_by('-created_at')
     serializer_class = TaskSerializer
 
+    def get_queryset(self):
+        qs = Task.objects.all().order_by('-created_at')
+        category_param = self.request.query_params.get('category_id') or self.request.query_params.get('category')
+        if category_param:
+            qs = qs.filter(category_id=category_param)
+        return qs
+
     def perform_create(self, serializer):
         task = serializer.save(created_by=self.request.user)
         
