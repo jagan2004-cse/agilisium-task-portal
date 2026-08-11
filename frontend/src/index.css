@@ -1,43 +1,39 @@
 @import "tailwindcss";
 
 @layer utilities {
-  /* Petrol Teal & Cyan Mint Enterprise Design System */
-  .glass-card {
+  /* Petrol Teal & Cyan Mint Enterprise Dark Theme */
+  .theme-dark .glass-card {
     background: #09222f;
     border: 1px solid #144052;
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+    color: #f8fafc;
   }
 
-  .dark .glass-card {
-    background: #09222f;
-    border: 1px solid #144052;
-  }
-
-  .glass-navbar-vertical {
+  .theme-dark .glass-navbar-vertical {
     background: #051722;
     border-right: 1px solid #144052;
     box-shadow: 4px 0 20px 0 rgba(0, 0, 0, 0.5);
   }
 
-  .glass-navbar {
+  .theme-dark .glass-navbar {
     background: #051722;
     border-bottom: 1px solid #144052;
     box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.5);
   }
 
-  .glass-input {
+  .theme-dark .glass-input {
     background: #061b27;
     border: 1px solid #18485e;
     color: #f8fafc;
     transition: all 0.2s ease-in-out;
   }
 
-  .glass-input:focus {
+  .theme-dark .glass-input:focus {
     border-color: #56e3ce;
     box-shadow: 0 0 0 2px rgba(86, 227, 206, 0.25);
   }
 
-  .glass-select {
+  .theme-dark .glass-select {
     background: #061b27;
     border: 1px solid #56e3ce;
     color: #56e3ce;
@@ -45,38 +41,109 @@
     transition: all 0.2s ease-in-out;
   }
 
-  .glass-select:hover {
-    border-color: #00e5ff;
-    box-shadow: 0 0 12px rgba(86, 227, 206, 0.3);
-  }
-
-  .glass-option-btn {
+  .theme-dark .glass-option-btn {
     background: #061b27;
     border: 1px solid #18485e;
     color: #94d2bd;
     transition: all 0.2s ease-in-out;
   }
 
-  .glass-option-btn:hover {
+  .theme-dark .glass-option-btn:hover {
     background: #09222f;
     border-color: #56e3ce;
     color: #ffffff;
-    transform: translateY(-1px);
   }
 
-  .glass-option-active {
+  .theme-dark .glass-option-active {
     background: linear-gradient(135deg, #005f73 0%, #0a9396 100%);
     border: 1px solid #56e3ce;
     box-shadow: 0 4px 14px 0 rgba(86, 227, 206, 0.35);
     color: #ffffff;
   }
 
-  .glow-cyan {
-    box-shadow: 0 0 20px rgba(86, 227, 206, 0.35);
+  /* Clean Enterprise White Light Theme */
+  .theme-light {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
   }
 
-  .glow-teal {
-    box-shadow: 0 0 20px rgba(10, 147, 150, 0.4);
+  .theme-light .glass-card {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04) !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .glass-navbar-vertical {
+    background: #ffffff !important;
+    border-right: 1px solid #cbd5e1 !important;
+    box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .theme-light .glass-navbar {
+    background: #ffffff !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .theme-light .glass-input {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .glass-input:focus {
+    border-color: #0284c7 !important;
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2) !important;
+  }
+
+  .theme-light .glass-select {
+    background: #ffffff !important;
+    border: 1px solid #0284c7 !important;
+    color: #0284c7 !important;
+    font-weight: 700 !important;
+  }
+
+  .theme-light .glass-option-btn {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+  }
+
+  .theme-light .glass-option-btn:hover {
+    background: #e2e8f0 !important;
+    border-color: #0284c7 !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .glass-option-active {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    border: 1px solid #0284c7 !important;
+    box-shadow: 0 4px 14px 0 rgba(2, 132, 199, 0.3) !important;
+    color: #ffffff !important;
+  }
+
+  .theme-light aside {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+  }
+
+  .theme-light header {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+  }
+
+  .theme-light nav button {
+    color: #334155 !important;
+  }
+
+  .theme-light nav button:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light nav button.bg-gradient-to-r {
+    color: #ffffff !important;
   }
 }
 

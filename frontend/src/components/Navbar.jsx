@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Dices, FolderPlus, ChevronDown, Check, X } from 'lucide-react';
+import { Bell, Dices, FolderPlus, ChevronDown, Check, X, Sun, Moon } from 'lucide-react';
 import { notificationsAPI, authAPI } from '../api';
 
-export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout, onOpenWheel }) {
+export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout, onOpenWheel, theme, toggleTheme }) {
   const [notifications, setNotifications] = useState([]);
   const [showNotifs, setShowNotifs] = useState(false);
   const [batches, setBatches] = useState([]);
@@ -69,7 +69,7 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-4">
           <img
-            src="/agilisium_logo.png"
+            src="/agilisium_logo.jpeg"
             alt="Agilisium Logo"
             className="h-12 w-auto object-contain bg-white px-3.5 py-1.5 rounded-2xl shadow-xl border border-[#144052] hover:scale-105 transition shrink-0"
           />
@@ -78,7 +78,7 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
           </div>
         </div>
 
-        {/* Custom Petrol Option Selector */}
+        {/* Custom Option Selector */}
         <div className="relative hidden sm:block">
           <button
             onClick={() => setShowBatchDropdown(!showBatchDropdown)}
@@ -133,8 +133,27 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
         </div>
       </div>
 
-      {/* Right User Controls & Lucky Wheel Launcher */}
+      {/* Right User Controls & Theme Switcher */}
       <div className="flex items-center gap-3">
+        {/* Theme Switcher Button */}
+        <button
+          onClick={toggleTheme}
+          className="px-3 py-1.5 rounded-xl bg-[#09222f] hover:bg-[#0d2836] border border-[#144052] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+          title="Toggle Light / Dark Theme"
+        >
+          {theme === 'light' ? (
+            <>
+              <Moon className="w-4 h-4 text-indigo-400" />
+              <span className="text-slate-700 font-bold">Dark Theme</span>
+            </>
+          ) : (
+            <>
+              <Sun className="w-4 h-4 text-amber-400" />
+              <span className="text-[#56e3ce] font-bold">White Theme</span>
+            </>
+          )}
+        </button>
+
         {/* Lucky Wheel Quick Launcher Button */}
         <button
           onClick={onOpenWheel}

@@ -21,10 +21,17 @@ export default function App() {
   const [selectedAssignmentForSubmit, setSelectedAssignmentForSubmit] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
   useEffect(() => {
     checkAuth();
   }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+  };
 
   const checkAuth = async () => {
     const token = localStorage.getItem('access_token');
@@ -59,7 +66,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#051923] text-slate-100 font-sans selection:bg-[#0a9396] selection:text-white">
+    <div className={`flex flex-col min-h-screen ${theme === 'light' ? 'theme-light bg-slate-100 text-slate-900' : 'theme-dark bg-[#051923] text-slate-100'} font-sans selection:bg-[#0a9396] selection:text-white transition-colors duration-300`}>
       {/* Top Horizontal Navbar */}
       <Navbar
         user={user}
@@ -67,6 +74,8 @@ export default function App() {
         setSelectedBatch={setSelectedBatch}
         onLogout={handleLogout}
         onOpenWheel={() => setActiveTab('wheel')}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
       <div className="flex flex-1 min-h-0">
