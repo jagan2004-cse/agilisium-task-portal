@@ -2,12 +2,22 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Auto-load backend/.env if present
+env_path = BASE_DIR / '.env'
+if env_path.exists():
+    with open(env_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                k, v = line.split('=', 1)
+                os.environ.setdefault(k.strip(), v.strip().strip("'").strip('"'))
+
 try:
     import dj_database_url
 except ImportError:
     dj_database_url = None
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-agilisium-task-portal-super-secret-key-production')
 
