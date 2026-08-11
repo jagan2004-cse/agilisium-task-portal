@@ -1,92 +1,7 @@
 @import "tailwindcss";
 
 @layer utilities {
-  /* Clean White Enterprise Theme (Default) */
-  .theme-light {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-  }
-
-  .theme-light .glass-card {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
-    color: #0f172a !important;
-  }
-
-  .theme-light .glass-navbar-vertical {
-    background: #ffffff !important;
-    border-right: 1px solid #e2e8f0 !important;
-    box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.03) !important;
-  }
-
-  .theme-light .glass-navbar {
-    background: #ffffff !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.03) !important;
-  }
-
-  .theme-light .glass-input {
-    background: #f8fafc !important;
-    border: 1px solid #cbd5e1 !important;
-    color: #0f172a !important;
-  }
-
-  .theme-light .glass-input:focus {
-    border-color: #005f73 !important;
-    box-shadow: 0 0 0 2px rgba(0, 95, 115, 0.15) !important;
-  }
-
-  .theme-light .glass-select {
-    background: #ffffff !important;
-    border: 1px solid #005f73 !important;
-    color: #005f73 !important;
-    font-weight: 700 !important;
-  }
-
-  .theme-light .glass-option-btn {
-    background: #f8fafc !important;
-    border: 1px solid #cbd5e1 !important;
-    color: #334155 !important;
-  }
-
-  .theme-light .glass-option-btn:hover {
-    background: #e2e8f0 !important;
-    border-color: #005f73 !important;
-    color: #0f172a !important;
-  }
-
-  .theme-light .glass-option-active {
-    background: linear-gradient(135deg, #005f73 0%, #0a9396 100%) !important;
-    border: 1px solid #005f73 !important;
-    box-shadow: 0 4px 14px 0 rgba(0, 95, 115, 0.25) !important;
-    color: #ffffff !important;
-  }
-
-  .theme-light aside {
-    background: #ffffff !important;
-    border-color: #e2e8f0 !important;
-  }
-
-  .theme-light header {
-    background: #ffffff !important;
-    border-color: #e2e8f0 !important;
-  }
-
-  .theme-light nav button {
-    color: #334155 !important;
-  }
-
-  .theme-light nav button:hover {
-    background: #f1f5f9 !important;
-    color: #0f172a !important;
-  }
-
-  .theme-light nav button.bg-gradient-to-r {
-    color: #ffffff !important;
-  }
-
-  /* Petrol Teal Dark Theme */
+  /* Petrol Teal & Cyan Mint Dark Theme (Primary Default) */
   .theme-dark {
     background-color: #051923 !important;
     color: #f8fafc !important;
@@ -150,13 +65,118 @@
     box-shadow: 0 4px 14px 0 rgba(86, 227, 206, 0.35);
     color: #ffffff;
   }
+
+  /* Clean White Theme (Comprehensive Dark Text Contrast Overrides) */
+  .theme-light {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .glass-card {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04) !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .glass-navbar-vertical {
+    background: #ffffff !important;
+    border-right: 1px solid #cbd5e1 !important;
+    box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .theme-light .glass-navbar {
+    background: #ffffff !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .theme-light .glass-input {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .glass-input:focus {
+    border-color: #0284c7 !important;
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2) !important;
+  }
+
+  .theme-light .glass-select {
+    background: #ffffff !important;
+    border: 1px solid #0284c7 !important;
+    color: #0284c7 !important;
+    font-weight: 700 !important;
+  }
+
+  .theme-light .glass-option-btn {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+  }
+
+  .theme-light .glass-option-btn:hover {
+    background: #e2e8f0 !important;
+    border-color: #0284c7 !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .glass-option-active {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    border: 1px solid #0284c7 !important;
+    box-shadow: 0 4px 14px 0 rgba(2, 132, 199, 0.3) !important;
+    color: #ffffff !important;
+  }
+
+  /* Automatic Inversion of Light Text Colors on White Theme */
+  .theme-light .text-white,
+  .theme-light .text-slate-100,
+  .theme-light .text-slate-200 {
+    color: #0f172a !important;
+  }
+
+  .theme-light .text-slate-300,
+  .theme-light .text-slate-400 {
+    color: #334155 !important;
+  }
+
+  .theme-light .text-cyan-300,
+  .theme-light .text-cyan-400,
+  .theme-light .text-cyan-500 {
+    color: #0284c7 !important;
+  }
+
+  .theme-light aside {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .theme-light header {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .theme-light nav button {
+    color: #334155 !important;
+  }
+
+  .theme-light nav button:hover {
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light nav button.bg-gradient-to-r,
+  .theme-light button.bg-gradient-to-r,
+  .theme-light span.bg-gradient-to-r {
+    color: #ffffff !important;
+  }
 }
 
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: #ffffff;
-  color: #0f172a;
+  background: #051923;
+  color: #f8fafc;
   min-height: 100vh;
 }
 
@@ -166,12 +186,12 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
+  background: #051923;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #144052;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #18485e;
 }
