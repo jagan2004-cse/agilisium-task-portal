@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, Dices, FolderPlus, ChevronDown, Check, X, Sun, Moon } from 'lucide-react';
 import { notificationsAPI, authAPI } from '../api';
+import AgilisiumLogo from './AgilisiumLogo';
 
 export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout, onOpenWheel, theme, toggleTheme }) {
   const [notifications, setNotifications] = useState([]);
@@ -70,11 +71,7 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
       {/* Left Brand & Dynamic Glass Batch Selector */}
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-4">
-          <img
-            src="/agilisium_logo.jpeg"
-            alt="Agilisium Logo"
-            className="h-12 w-auto object-contain bg-white px-3.5 py-1.5 rounded-2xl shadow-xl border border-slate-200 hover:scale-105 transition shrink-0"
-          />
+          <AgilisiumLogo size="sm" theme={theme} />
           <div>
             <h1 className={`font-extrabold text-base sm:text-lg tracking-wider uppercase leading-none ${
               theme === 'light' ? 'text-teal-700' : 'text-[#56e3ce]'
