@@ -14,7 +14,14 @@ API.interceptors.request.use((config) => {
 
 export const authAPI = {
   login: (email, password) => API.post('/auth/login/', { email, password }),
+  signup: (data) => API.post('/auth/signup/', data),
+  verifyEmailOTP: (data) => API.post('/auth/verify-email-otp/', data),
+  resendOTP: (data) => API.post('/auth/resend-otp/', data),
+  forgotPasswordRequest: (data) => API.post('/auth/forgot-password/request/', data),
+  forgotPasswordVerify: (data) => API.post('/auth/forgot-password/verify/', data),
+  forgotPasswordReset: (data) => API.post('/auth/forgot-password/reset/', data),
   getProfile: () => API.get('/auth/profile/'),
+  updateProfile: (data) => API.patch('/auth/profile/', data),
   changePassword: (old_password, new_password) => API.post('/auth/change-password/', { old_password, new_password }),
   getUsers: (params) => API.get('/users/', { params }),
   createUser: (data) => API.post('/users/', data),

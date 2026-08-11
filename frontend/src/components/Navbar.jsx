@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Bell, Dices, FolderPlus, ChevronDown, Check, X, Sun, Moon } from 'lucide-react';
 import { notificationsAPI, authAPI } from '../api';
 import AgilisiumLogo from './AgilisiumLogo';
+import UserProfileModal from './UserProfileModal';
 
-export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout, onOpenWheel, theme, toggleTheme }) {
+export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout, onOpenWheel, theme, toggleTheme, onUpdateUser }) {
   const [notifications, setNotifications] = useState([]);
   const [showNotifs, setShowNotifs] = useState(false);
   const [batches, setBatches] = useState([]);
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const [showNewBatchModal, setShowNewBatchModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [newBatchName, setNewBatchName] = useState('');
   const [newBatchDesc, setNewBatchDesc] = useState('');
   const [loadingBatch, setLoadingBatch] = useState(false);
@@ -242,11 +244,15 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
         </div>
 
         {/* User Badge */}
-        <div className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border transition ${
-          theme === 'light'
-            ? 'bg-slate-100 border-slate-300 text-slate-900'
-            : 'bg-[#09222f] border-[#144052] text-white'
-        }`}>
+        <div
+          onClick={() => setShowProfileModal(true)}
+          className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border transition cursor-pointer hover:scale-[1.02] ${
+            theme === 'light'
+              ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-900'
+              : 'bg-[#09222f] hover:bg-[#0f3447] border-[#144052] text-white'
+          }`}
+          title="Click to view & edit profile"
+        >
           <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#005f73] to-[#0a9396] text-white flex items-center justify-center font-black text-xs border border-white/20">
             {user?.first_name?.[0] || 'U'}
           </div>
@@ -260,6 +266,17 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
           </div>
         </div>
       </div>
+
+      {/* User Profile Modal */}
+      {showProfileModal && (
+        <UserProfileModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+          user={user}
+          onUpdateUser={onUpdateUser}
+          theme={theme}
+        />
+      )}
 
       {/* Add New Upcoming Batch Modal */}
       {showNewBatchModal && (

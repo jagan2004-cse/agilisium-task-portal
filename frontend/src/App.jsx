@@ -76,6 +76,7 @@ export default function App() {
         onOpenWheel={() => setActiveTab('wheel')}
         theme={theme}
         toggleTheme={toggleTheme}
+        onUpdateUser={(updated) => setUser(updated)}
       />
 
       <div className="flex flex-1 min-h-0">

@@ -4,7 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 
-from accounts.views import LoginView, CurrentUserProfileView, UserListView, ChangePasswordView, BatchViewSet
+from accounts.views import (
+    LoginView, CurrentUserProfileView, UserListView, ChangePasswordView, BatchViewSet,
+    SignupView, VerifyEmailOTPView, ResendOTPView,
+    ForgotPasswordRequestView, ForgotPasswordVerifyView, ForgotPasswordResetView
+)
 from tasks.views import CategoryViewSet, TaskViewSet, TaskAssignmentViewSet
 from submissions.views import SubmitTaskView, SubmissionViewSet, BulkDownloadSubmissionsView
 from approvals.views import ReviewSubmissionView
@@ -32,6 +36,12 @@ urlpatterns = [
     
     # Auth & Users
     path('api/auth/login/', LoginView.as_view(), name='login'),
+    path('api/auth/signup/', SignupView.as_view(), name='signup'),
+    path('api/auth/verify-email-otp/', VerifyEmailOTPView.as_view(), name='verify-email-otp'),
+    path('api/auth/resend-otp/', ResendOTPView.as_view(), name='resend-otp'),
+    path('api/auth/forgot-password/request/', ForgotPasswordRequestView.as_view(), name='forgot-password-request'),
+    path('api/auth/forgot-password/verify/', ForgotPasswordVerifyView.as_view(), name='forgot-password-verify'),
+    path('api/auth/forgot-password/reset/', ForgotPasswordResetView.as_view(), name='forgot-password-reset'),
     path('api/auth/profile/', CurrentUserProfileView.as_view(), name='profile'),
     path('api/auth/change-password/', ChangePasswordView.as_view(), name='change-password'),
     path('api/users/', UserListView.as_view(), name='user-list'),
