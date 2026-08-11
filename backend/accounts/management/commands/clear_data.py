@@ -55,13 +55,14 @@ class Command(BaseCommand):
         )
         UserProfile.objects.create(user=admin_user, bio="Primary Training Admin")
 
-        # 8. Re-create default 5 Categories
+        # 8. Re-create default Categories (including Certification)
         categories_data = [
             "Assessment",
             "Duolingo,Elevate(Streaks)",
             "Tasks",
             "Public Speaking Topics",
-            "Tech Updates Content"
+            "Tech Updates Content",
+            "Certification"
         ]
         Category.objects.all().delete()
         for cat_name in categories_data:

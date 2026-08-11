@@ -31,6 +31,7 @@ class Task(models.Model):
         PPT = 'PPT', 'PPT Presentation (.ppt, .pptx)'
         DOC = 'DOC', 'Word Document (.doc, .docx)'
         IMAGE = 'IMAGE', 'Image Format (.png, .jpg, .jpeg)'
+        PDF = 'PDF', 'PDF Document (.pdf)'
         ANY = 'ANY', 'Any Format'
 
     title = models.CharField(max_length=255)

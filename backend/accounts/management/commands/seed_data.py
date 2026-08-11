@@ -91,13 +91,14 @@ class Command(BaseCommand):
                 UserProfile.objects.create(user=user, points=100 + (i * 15), streak_count=(i % 7) + 1)
                 self.stdout.write(f"Created Engineer: {first} {last} ({email})")
 
-        # 3. Create 5 Clean Categories
+        # 3. Create Categories (including Certification with default PDF format)
         categories_data = [
             "Assessment",
             "Duolingo,Elevate(Streaks)",
             "Tasks",
             "Public Speaking Topics",
-            "Tech Updates Content"
+            "Tech Updates Content",
+            "Certification"
         ]
 
         for cat_name in categories_data:
@@ -114,4 +115,4 @@ class Command(BaseCommand):
             }
         )
 
-        self.stdout.write(self.style.SUCCESS("Batch 12 Accounts Seeding Completed Successfully!"))
+        self.stdout.write(self.style.SUCCESS("Batch 12 Accounts & Certification Category Seeding Completed Successfully!"))

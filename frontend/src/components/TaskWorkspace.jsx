@@ -74,7 +74,12 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
     const catObj = categories.find(c => String(c.id) === String(catId));
     if (catObj) {
       const nameLower = catObj.name.toLowerCase();
-      if (nameLower.includes('assessment') || nameLower === 'tasks') {
+      if (nameLower.includes('certification') || nameLower.includes('certificate')) {
+        setAllowedFormat('PDF');
+        setIsRecurring(false);
+        setRecurrenceType('NONE');
+        setDueTime('18:00');
+      } else if (nameLower.includes('assessment') || nameLower === 'tasks') {
         setAllowedFormat('PPT');
         setIsRecurring(false);
         setRecurrenceType('NONE');
@@ -293,6 +298,7 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                     )}
 
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-900 text-cyan-300 border border-slate-600 flex items-center gap-1">
+                      {task.allowed_format === 'PDF' && '📄 PDF Only'}
                       {task.allowed_format === 'PPT' && '📊 PPT Only'}
                       {task.allowed_format === 'DOC' && '📝 Word Doc Only'}
                       {task.allowed_format === 'IMAGE' && '🖼️ Image Only'}
@@ -396,7 +402,7 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
               {categories.length > 0 && (
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">Category</label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {categories.map((cat) => (
                       <button
                         key={cat.id}
@@ -462,12 +468,13 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
               {/* ALLOWED FILE FORMAT SELECTOR */}
               <div>
                 <label className="block font-semibold text-slate-300 mb-1">Allowed File Format Option</label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                   {[
+                    { id: 'PDF', label: 'PDF Only', ext: '.pdf', icon: '📄' },
                     { id: 'PPT', label: 'PPT Only', ext: '.ppt, .pptx', icon: '📊' },
-                    { id: 'DOC', label: 'Word Doc Only', ext: '.doc, .docx', icon: '📝' },
-                    { id: 'IMAGE', label: 'Image Only', ext: '.png, .jpg, .jpeg', icon: '🖼️' },
-                    { id: 'ANY', label: 'Any Format', ext: '.pdf, .zip, all', icon: '📁' },
+                    { id: 'DOC', label: 'Word Doc', ext: '.doc, .docx', icon: '📝' },
+                    { id: 'IMAGE', label: 'Image Only', ext: '.png, .jpg', icon: '🖼️' },
+                    { id: 'ANY', label: 'Any Format', ext: '.zip, all', icon: '📁' },
                   ].map((fmt) => (
                     <button
                       key={fmt.id}
