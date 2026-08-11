@@ -85,24 +85,26 @@ export default function App() {
           setActiveTab={setActiveTab}
           user={user}
           onLogout={handleLogout}
+          theme={theme}
         />
 
         {/* Main Workspace Content */}
         <main className="flex-1 p-8 overflow-y-auto min-w-0">
           {activeTab === 'dashboard' && (
             user.role !== 'USER' ? (
-              <AdminDashboard onNavigate={setActiveTab} />
+              <AdminDashboard onNavigate={setActiveTab} theme={theme} />
             ) : (
               <UserDashboard
                 user={user}
                 refreshKey={refreshKey}
                 onOpenSubmitModal={(assign) => setSelectedAssignmentForSubmit(assign)}
+                theme={theme}
               />
             )
           )}
 
           {activeTab === 'wheel' && (
-            <LuckySpinWheel />
+            <LuckySpinWheel theme={theme} />
           )}
 
           {activeTab === 'tasks' && (
@@ -110,27 +112,28 @@ export default function App() {
               user={user}
               refreshKey={refreshKey}
               onOpenSubmitModal={(assign) => setSelectedAssignmentForSubmit(assign)}
+              theme={theme}
             />
           )}
 
           {activeTab === 'rotation' && (
-            <PresentationRotationWorkspace user={user} />
+            <PresentationRotationWorkspace user={user} theme={theme} />
           )}
 
           {activeTab === 'submissions' && (
-            <AdminApprovalHub user={user} />
+            <AdminApprovalHub user={user} theme={theme} />
           )}
 
           {activeTab === 'storage' && (
-            <StorageAnalyticsView />
+            <StorageAnalyticsView theme={theme} />
           )}
 
           {activeTab === 'defaulters' && (
-            <DefaultersReportsView />
+            <DefaultersReportsView theme={theme} />
           )}
 
           {activeTab === 'logs' && (
-            <ActivityLogsView />
+            <ActivityLogsView theme={theme} />
           )}
         </main>
       </div>
@@ -144,6 +147,7 @@ export default function App() {
             setSelectedAssignmentForSubmit(null);
             setRefreshKey(prev => prev + 1);
           }}
+          theme={theme}
         />
       )}
     </div>
