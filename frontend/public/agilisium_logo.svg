@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <g transform="translate(0, 5)">
+    <!-- Left Teal Capsule Leg -->
+    <path d="M 45,150 L 95,50 C 105,30 135,45 125,65 L 75,165 C 65,185 35,170 45,150 Z" 
+          fill="#00a8b5" />
+    
+    <!-- Right Coral Red Capsule Leg -->
+    <path d="M 155,150 L 105,50 C 95,30 65,45 75,65 L 125,165 C 135,185 165,170 155,150 Z" 
+          fill="#d94b5a" />
+
+    <!-- Pure Oval SVG representing exact user logo -->
+  </g>
+</svg>

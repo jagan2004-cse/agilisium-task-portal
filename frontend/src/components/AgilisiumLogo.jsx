@@ -1,51 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function AgilisiumLogo({ size = 'md', className = '', theme = 'dark' }) {
-  const [imgError, setImgError] = useState(false);
+  // Dimension height scaling
+  const hSize = size === 'lg' ? 'h-14' : size === 'sm' ? 'h-9' : 'h-11';
+  const iconSize = size === 'lg' ? 'w-12 h-12' : size === 'sm' ? 'w-8 h-8' : 'w-10 h-10';
 
-  // Dynamic height sizing
-  const hClass = size === 'lg' ? 'h-16' : size === 'sm' ? 'h-9' : 'h-12';
-
-  if (!imgError) {
-    return (
-      <div className={`flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-xl border border-slate-200 ${className}`}>
-        <img
-          src="/agilisium_logo.jpg"
-          alt="Agilisium Logo"
-          onError={() => setImgError(true)}
-          className={`${hClass} w-auto object-contain rounded-lg`}
-        />
-        <div className="text-left">
-          <span className="text-slate-900 font-extrabold tracking-wider text-sm block leading-none">AGILISIUM</span>
-          <span className="text-teal-600 font-bold tracking-widest text-[9px] block mt-0.5">CONSULTING</span>
-        </div>
-      </div>
-    );
-  }
-
-  // Pure SVG Fallback Vector Logo Badge (Guaranteed to NEVER fail)
   return (
-    <div className={`flex items-center gap-3 bg-gradient-to-r from-slate-900 via-[#061b27] to-slate-900 px-4 py-2.5 rounded-2xl border border-cyan-500/40 shadow-xl ${className}`}>
-      <svg className={`${hClass} w-auto`} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="agiGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#56E3CE" />
-            <stop offset="50%" stopColor="#0A9396" />
-            <stop offset="100%" stopColor="#005F73" />
-          </linearGradient>
-          <linearGradient id="agiGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#005F73" />
-            <stop offset="100%" stopColor="#10B981" />
-          </linearGradient>
-        </defs>
-        {/* Modern 3D Geometric "A" Emblem */}
-        <path d="M50 10 L85 85 L65 85 L50 45 L35 85 L15 85 Z" fill="url(#agiGrad1)" />
-        <path d="M50 10 L30 50 L45 50 L50 35 L60 60 L75 60 Z" fill="url(#agiGrad2)" opacity="0.9" />
-        <circle cx="50" cy="32" r="5" fill="#56E3CE" />
+    <div className={`flex items-center gap-3 bg-white px-3.5 py-1.5 rounded-2xl shadow-xl border border-slate-200 hover:scale-[1.02] transition-all cursor-pointer ${className}`}>
+      {/* Exact Official Agilisium Chevron "A" SVG Emblem from User Image */}
+      <svg className={`${iconSize} shrink-0`} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Left Cyan/Teal Arm */}
+        <path
+          d="M 28 82 C 16 82 10 70 18 58 L 48 18 C 56 6 68 14 62 26 L 32 66 C 26 74 34 82 28 82 Z"
+          fill="#00a8b5"
+        />
+        {/* Right Coral Red Arm */}
+        <path
+          d="M 72 82 C 84 82 90 70 82 58 L 52 18 C 44 6 32 14 38 26 L 68 66 C 74 74 66 82 72 82 Z"
+          fill="#d94b5a"
+        />
+        {/* Overlapping Apex (Teardrop / Maroon Drop) */}
+        <path
+          d="M 50 14 C 42 24 38 38 50 56 C 62 38 58 24 50 14 Z"
+          fill="#4e262a"
+        />
       </svg>
+
       <div className="text-left">
-        <span className="text-white font-extrabold tracking-wider text-base block leading-none">AGILISIUM</span>
-        <span className="text-[#56e3ce] font-bold tracking-widest text-[9px] block mt-0.5">CONSULTING</span>
+        <span className="text-slate-900 font-extrabold tracking-wider text-sm block leading-none">AGILISIUM</span>
+        <span className="text-[#00a8b5] font-bold tracking-widest text-[9px] block mt-0.5 uppercase">Consulting</span>
       </div>
     </div>
   );
