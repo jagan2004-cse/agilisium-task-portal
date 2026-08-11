@@ -21,7 +21,7 @@ export default function App() {
   const [selectedAssignmentForSubmit, setSelectedAssignmentForSubmit] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
     checkAuth();
@@ -55,7 +55,7 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-[#051923] text-[#56e3ce] font-bold text-sm">
+      <div className="h-screen w-screen flex items-center justify-center bg-white text-[#005f73] font-bold text-sm">
         Loading Agilisium Task Portal...
       </div>
     );
@@ -66,7 +66,7 @@ export default function App() {
   }
 
   return (
-    <div className={`flex flex-col min-h-screen ${theme === 'light' ? 'theme-light bg-slate-100 text-slate-900' : 'theme-dark bg-[#051923] text-slate-100'} font-sans selection:bg-[#0a9396] selection:text-white transition-colors duration-300`}>
+    <div className={`flex flex-col min-h-screen ${theme === 'dark' ? 'theme-dark bg-[#051923] text-slate-100' : 'theme-light bg-white text-slate-900'} font-sans selection:bg-[#0a9396] selection:text-white transition-colors duration-300`}>
       {/* Top Horizontal Navbar */}
       <Navbar
         user={user}
