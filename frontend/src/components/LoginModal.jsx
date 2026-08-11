@@ -34,8 +34,8 @@ export default function LoginModal({ onLoginSuccess }) {
 
         <div className="flex flex-col items-center justify-center mb-8">
           <AgilisiumLogo size="lg" className="mb-4" />
-          <h2 className="text-2xl font-extrabold text-[#56e3ce] tracking-wider uppercase">TRACKING AUTOMATION</h2>
-          <p className="text-xs text-slate-300 mt-1">Evidence Management & Task Tracking Portal</p>
+          <h2 className="text-2xl font-black text-[#56e3ce] tracking-wider uppercase">TASKSPRINT AUTOMATION</h2>
+          <p className="text-xs text-slate-300 mt-1">Agilisium Evidence & Sprint Tracking Portal</p>
         </div>
 
         {error && (

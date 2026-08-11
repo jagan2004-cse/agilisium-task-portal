@@ -73,9 +73,9 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
         <div className="flex items-center gap-4">
           <AgilisiumLogo size="sm" theme={theme} />
           <div>
-            <h1 className={`font-extrabold text-base sm:text-lg tracking-wider uppercase leading-none ${
+            <h1 className={`font-black text-base sm:text-lg tracking-wider uppercase leading-none ${
               theme === 'light' ? 'text-teal-700' : 'text-[#56e3ce]'
-            }`}>Tracking Automation</h1>
+            }`}>TASKSPRINT AUTOMATION</h1>
           </div>
         </div>
 
