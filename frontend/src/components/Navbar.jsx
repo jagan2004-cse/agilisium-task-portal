@@ -75,7 +75,7 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
           <div>
             <h1 className={`font-black text-base sm:text-lg tracking-wider uppercase leading-none ${
               theme === 'light' ? 'text-teal-700' : 'text-[#56e3ce]'
-            }`}>TASKSPRINT AUTOMATION</h1>
+            }`}>TASKSPRINT</h1>
           </div>
         </div>
 
