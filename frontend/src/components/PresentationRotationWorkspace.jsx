@@ -400,18 +400,6 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
             <span>Cycle History</span>
           </button>
         </div>
-
-        {/* Search Input */}
-        <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search member name or program..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
-          />
-        </div>
       </div>
 
       {/* 📋 TAB 1: Today's Explanations */}
