@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { UploadCloud, File, Image as ImageIcon, X, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { UploadCloud, File, Image as ImageIcon, X, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { submissionsAPI } from '../api';
 
 export default function SubmissionDrawer({ assignment, onClose, onSuccess }) {
@@ -8,14 +8,17 @@ export default function SubmissionDrawer({ assignment, onClose, onSuccess }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const fileInputRef = useRef(null);
 
   const task = assignment?.task_details || assignment?.task || (assignment?.title ? assignment : null);
   const allowedFmt = task?.allowed_format || 'ANY';
 
+  // Return clean extension filters for OS File Explorer file picker dialog
   const getAcceptString = () => {
-    if (allowedFmt === 'PPT') return '.ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation';
-    if (allowedFmt === 'DOC') return '.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-    if (allowedFmt === 'IMAGE') return 'image/*,.png,.jpg,.jpeg';
+    if (allowedFmt === 'PDF') return '.pdf';
+    if (allowedFmt === 'PPT') return '.ppt,.pptx';
+    if (allowedFmt === 'DOC') return '.doc,.docx';
+    if (allowedFmt === 'IMAGE') return '.png,.jpg,.jpeg';
     return '*';
   };
 
@@ -23,7 +26,13 @@ export default function SubmissionDrawer({ assignment, onClose, onSuccess }) {
     if (!selectedFile) return false;
     const fileName = selectedFile.name.toLowerCase();
 
-    if (allowedFmt === 'PPT') {
+    if (allowedFmt === 'PDF') {
+      const isPdf = fileName.endsWith('.pdf') || selectedFile.type === 'application/pdf';
+      if (!isPdf) {
+        setError('❌ Invalid format! This task strictly requires a PDF document (.pdf).');
+        return false;
+      }
+    } else if (allowedFmt === 'PPT') {
       const isPpt = fileName.endsWith('.ppt') || fileName.endsWith('.pptx');
       if (!isPpt) {
         setError('❌ Invalid format! This task strictly requires a PPT presentation (.ppt, .pptx).');
@@ -114,6 +123,7 @@ export default function SubmissionDrawer({ assignment, onClose, onSuccess }) {
 
         {/* Format Requirement Banner */}
         <div className="p-3 rounded-xl mb-3 text-xs font-bold bg-cyan-950/80 border border-cyan-500/50 text-cyan-200 flex items-center gap-2">
+          {allowedFmt === 'PDF' && <span>📄 Required File Format: PDF Document (.pdf)</span>}
           {allowedFmt === 'PPT' && <span>📊 Required File Format: PPT Presentation (.ppt, .pptx)</span>}
           {allowedFmt === 'DOC' && <span>📝 Required File Format: Word Document (.doc, .docx)</span>}
           {allowedFmt === 'IMAGE' && <span>🖼️ Required File Format: Image Screenshot (.png, .jpg, .jpeg)</span>}
@@ -132,42 +142,52 @@ export default function SubmissionDrawer({ assignment, onClose, onSuccess }) {
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-medium mb-3">
-            {error}
+          <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-medium mb-3 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+          {/* File Picker Input Restricted by accept */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={getAcceptString()}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
           {/* Drag & Drop File Upload Area */}
-          <div className="border-2 border-dashed border-slate-700 hover:border-cyan-400/50 rounded-2xl p-6 text-center bg-slate-900 transition-all">
+          <div 
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-slate-700 hover:border-cyan-400/50 rounded-2xl p-6 text-center bg-slate-900 transition-all cursor-pointer"
+          >
             {previewUrl ? (
               <div className="space-y-2">
                 <img src={previewUrl} alt="Preview" className="max-h-40 mx-auto rounded-xl border border-slate-700 shadow-lg object-contain" />
                 <p className="text-xs text-emerald-300 font-semibold">{file.name}</p>
+                <span className="text-[10px] text-slate-400 underline block mt-1">Click to change file</span>
               </div>
             ) : file ? (
               <div className="space-y-2 py-4">
                 <File className="w-10 h-10 text-cyan-400 mx-auto" />
                 <p className="font-semibold text-white">{file.name}</p>
                 <p className="text-[11px] text-slate-400">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                <span className="text-[10px] text-slate-400 underline block mt-1">Click to change file</span>
               </div>
             ) : (
-              <label className="cursor-pointer space-y-2 block">
+              <div className="space-y-2">
                 <UploadCloud className="w-10 h-10 text-slate-400 mx-auto" />
                 <p className="font-semibold text-white">Click or drag & drop evidence file</p>
                 <p className="text-[10px] text-cyan-400 font-medium">
+                  {allowedFmt === 'PDF' && 'Only .pdf files allowed'}
                   {allowedFmt === 'PPT' && 'Only .ppt and .pptx files allowed'}
                   {allowedFmt === 'DOC' && 'Only .doc and .docx files allowed'}
                   {allowedFmt === 'IMAGE' && 'Only .png, .jpg, and .jpeg files allowed'}
                   {allowedFmt === 'ANY' && 'PNG, JPEG, PDF, PPT, DOCX, ZIP (Max 100 MB)'}
                 </p>
-                <input
-                  type="file"
-                  accept={getAcceptString()}
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </label>
+              </div>
             )}
           </div>
 
