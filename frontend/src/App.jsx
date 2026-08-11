@@ -48,7 +48,7 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-slate-950 text-cyan-400 font-bold text-sm">
+      <div className="h-screen w-screen flex items-center justify-center bg-[#051923] text-[#56e3ce] font-bold text-sm">
         Loading Agilisium Task Portal...
       </div>
     );
@@ -59,8 +59,8 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-white">
-      {/* Top Horizontal Glassmorphic Navbar */}
+    <div className="flex flex-col min-h-screen bg-[#051923] text-slate-100 font-sans selection:bg-[#0a9396] selection:text-white">
+      {/* Top Horizontal Navbar */}
       <Navbar
         user={user}
         selectedBatch={selectedBatch}
@@ -70,7 +70,7 @@ export default function App() {
       />
 
       <div className="flex flex-1 min-h-0">
-        {/* Left Glassmorphic Sidebar */}
+        {/* Left Sidebar */}
         <GlassSidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}

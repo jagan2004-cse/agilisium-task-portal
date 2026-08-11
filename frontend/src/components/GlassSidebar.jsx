@@ -25,7 +25,7 @@ export default function GlassSidebar({ activeTab, setActiveTab, user, onLogout }
   ];
 
   return (
-    <aside className="w-64 glass-navbar h-[calc(100vh-65px)] sticky top-[65px] flex flex-col justify-between p-4 z-20 border-r border-slate-700 bg-slate-800">
+    <aside className="w-64 h-[calc(100vh-65px)] sticky top-[65px] flex flex-col justify-between p-4 z-20 border-r border-[#144052] bg-[#051722]">
       {/* Navigation Menu */}
       <nav className="space-y-1.5 overflow-y-auto pr-1">
         {menuItems.map((item) => {
@@ -36,13 +36,13 @@ export default function GlassSidebar({ activeTab, setActiveTab, user, onLogout }
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/50 shadow-lg'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700 border border-transparent'
+                  ? 'bg-gradient-to-r from-[#005f73] to-[#0a9396] text-[#56e3ce] border border-[#56e3ce]/60 shadow-lg shadow-[#0a9396]/20'
+                  : 'text-slate-300 hover:text-white hover:bg-[#09222f] border border-transparent'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-[#56e3ce]' : 'text-slate-400'}`} />
               <span>{item.label}</span>
             </button>
           );

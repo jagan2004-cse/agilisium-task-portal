@@ -64,35 +64,35 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
   return (
-    <header className="sticky top-0 z-30 glass-navbar px-8 py-3 flex items-center justify-between border-b border-slate-700 bg-slate-800">
+    <header className="sticky top-0 z-30 px-8 py-3 flex items-center justify-between border-b border-[#144052] bg-[#051722]">
       {/* Left Brand & Dynamic Glass Batch Selector */}
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-4">
           <img
             src="/agilisium_logo.png"
             alt="Agilisium Logo"
-            className="h-12 w-auto object-contain bg-white px-3.5 py-1.5 rounded-2xl shadow-xl border border-slate-700 hover:scale-105 transition shrink-0"
+            className="h-12 w-auto object-contain bg-white px-3.5 py-1.5 rounded-2xl shadow-xl border border-[#144052] hover:scale-105 transition shrink-0"
           />
           <div>
-            <h1 className="font-extrabold text-base sm:text-lg text-cyan-400 tracking-wider uppercase leading-none">Tracking Automation</h1>
+            <h1 className="font-extrabold text-base sm:text-lg text-[#56e3ce] tracking-wider uppercase leading-none">Tracking Automation</h1>
           </div>
         </div>
 
-        {/* Custom Glassmorphism Option Selector */}
+        {/* Custom Petrol Option Selector */}
         <div className="relative hidden sm:block">
           <button
             onClick={() => setShowBatchDropdown(!showBatchDropdown)}
-            className="px-4 py-2 rounded-2xl glass-select flex items-center gap-2 text-xs font-extrabold shadow-lg cursor-pointer hover:scale-[1.02] transition border border-cyan-500/50"
+            className="px-4 py-2 rounded-2xl glass-select flex items-center gap-2 text-xs font-extrabold shadow-lg cursor-pointer hover:scale-[1.02] transition border border-[#56e3ce]/50"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#56e3ce] animate-ping" />
             <span>{activeBatchObj.name}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-cyan-400" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#56e3ce]" />
           </button>
 
           {/* Custom Option Dropdown */}
           {showBatchDropdown && (
-            <div className="absolute left-0 mt-2 w-64 bg-slate-800 rounded-2xl p-2 shadow-2xl z-50 border border-slate-700 space-y-1">
-              <div className="px-3 py-1.5 border-b border-slate-700 text-[10px] uppercase font-bold text-slate-400 flex justify-between items-center">
+            <div className="absolute left-0 mt-2 w-64 bg-[#09222f] rounded-2xl p-2 shadow-2xl z-50 border border-[#144052] space-y-1">
+              <div className="px-3 py-1.5 border-b border-[#144052] text-[10px] uppercase font-bold text-[#94d2bd] flex justify-between items-center">
                 <span>Select Active Batch</span>
                 {user?.role !== 'USER' && (
                   <button
@@ -100,7 +100,7 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
                       setShowBatchDropdown(false);
                       setShowNewBatchModal(true);
                     }}
-                    className="text-cyan-400 hover:underline flex items-center gap-1 font-bold"
+                    className="text-[#56e3ce] hover:underline flex items-center gap-1 font-bold"
                   >
                     <FolderPlus className="w-3 h-3" />
                     <span>+ Add New</span>
@@ -119,12 +119,12 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
                     }}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'glass-option-active text-cyan-300'
-                        : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                        ? 'glass-option-active text-[#56e3ce]'
+                        : 'text-slate-300 hover:bg-[#0d2836] hover:text-white'
                     }`}
                   >
                     <span>{b.name}</span>
-                    {isSelected && <Check className="w-4 h-4 text-cyan-400" />}
+                    {isSelected && <Check className="w-4 h-4 text-[#56e3ce]" />}
                   </button>
                 );
               })}
@@ -138,9 +138,9 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
         {/* Lucky Wheel Quick Launcher Button */}
         <button
           onClick={onOpenWheel}
-          className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white text-xs font-black shadow-lg shadow-cyan-500/25 flex items-center gap-1.5 cursor-pointer transition transform hover:scale-105 border border-cyan-400/40"
+          className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#005f73] to-[#0a9396] hover:from-[#0a9396] hover:to-[#94d2bd] text-white text-xs font-black shadow-lg shadow-[#0a9396]/20 flex items-center gap-1.5 cursor-pointer transition transform hover:scale-105 border border-[#56e3ce]/40"
         >
-          <Dices className="w-4 h-4 text-cyan-200 animate-spin" />
+          <Dices className="w-4 h-4 text-[#56e3ce] animate-spin" />
           <span>Lucky Wheel</span>
         </button>
 
@@ -148,7 +148,7 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
         <div className="relative">
           <button
             onClick={() => setShowNotifs(!showNotifs)}
-            className="p-2 rounded-xl bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-300 hover:text-white transition cursor-pointer relative"
+            className="p-2 rounded-xl bg-[#09222f] hover:bg-[#0d2836] border border-[#144052] text-slate-300 hover:text-white transition cursor-pointer relative"
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
@@ -159,11 +159,11 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
           </button>
 
           {showNotifs && (
-            <div className="absolute right-0 mt-3 w-80 bg-slate-800 rounded-2xl p-4 shadow-2xl z-50 border border-slate-700">
-              <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-700">
+            <div className="absolute right-0 mt-3 w-80 bg-[#09222f] rounded-2xl p-4 shadow-2xl z-50 border border-[#144052]">
+              <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#144052]">
                 <h4 className="text-xs font-bold text-white uppercase tracking-wider">Notifications</h4>
                 {unreadCount > 0 && (
-                  <button onClick={() => notificationsAPI.markRead().then(fetchNotifications)} className="text-[10px] text-cyan-400 hover:underline">
+                  <button onClick={() => notificationsAPI.markRead().then(fetchNotifications)} className="text-[10px] text-[#56e3ce] hover:underline">
                     Mark read
                   </button>
                 )}
@@ -173,7 +173,7 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
                   <p className="text-slate-400 py-4 text-center">No notifications yet.</p>
                 ) : (
                   notifications.map((n) => (
-                    <div key={n.id} className={`p-2.5 rounded-xl ${n.is_read ? 'bg-slate-700 text-slate-300' : 'bg-cyan-950 border border-cyan-800 text-white'}`}>
+                    <div key={n.id} className={`p-2.5 rounded-xl ${n.is_read ? 'bg-[#061b27] text-slate-300' : 'bg-[#005f73]/40 border border-[#56e3ce]/40 text-white'}`}>
                       <p className="font-semibold">{n.title}</p>
                       <p className="text-[10px] text-slate-400 mt-0.5">{n.message}</p>
                     </div>
@@ -185,13 +185,13 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
         </div>
 
         {/* User Badge */}
-        <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-700 border border-slate-600">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 text-white flex items-center justify-center font-black text-xs border border-white/20">
+        <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#09222f] border border-[#144052]">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#005f73] to-[#0a9396] text-white flex items-center justify-center font-black text-xs border border-[#56e3ce]/30">
             {user?.first_name?.[0] || 'U'}
           </div>
           <div className="hidden lg:block overflow-hidden">
             <p className="text-xs font-bold text-white leading-tight truncate">{user?.full_name || user?.username}</p>
-            <span className="text-[9px] text-cyan-300 font-semibold uppercase">{user?.role?.replace('_', ' ')}</span>
+            <span className="text-[9px] text-[#56e3ce] font-semibold uppercase">{user?.role?.replace('_', ' ')}</span>
           </div>
         </div>
       </div>
@@ -199,7 +199,7 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
       {/* Add New Upcoming Batch Modal */}
       {showNewBatchModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85">
-          <div className="w-full max-w-md bg-slate-800 rounded-3xl p-6 border border-slate-700 shadow-2xl space-y-4 text-xs">
+          <div className="w-full max-w-md bg-[#09222f] rounded-3xl p-6 border border-[#144052] shadow-2xl space-y-4 text-xs">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-white">Add New Upcoming Batch</h3>
               <button onClick={() => setShowNewBatchModal(false)} className="text-slate-400 hover:text-white">
@@ -231,11 +231,11 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-700">
-                <button type="button" onClick={() => setShowNewBatchModal(false)} className="px-4 py-2 rounded-xl bg-slate-700 text-slate-300 font-bold">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#144052]">
+                <button type="button" onClick={() => setShowNewBatchModal(false)} className="px-4 py-2 rounded-xl bg-[#061b27] text-slate-300 font-bold">
                   Cancel
                 </button>
-                <button type="submit" disabled={loadingBatch} className="px-5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 font-bold text-white shadow-lg">
+                <button type="submit" disabled={loadingBatch} className="px-5 py-2 rounded-xl bg-[#005f73] hover:bg-[#0a9396] font-bold text-white shadow-lg">
                   {loadingBatch ? 'Creating...' : 'Create Batch'}
                 </button>
               </div>
