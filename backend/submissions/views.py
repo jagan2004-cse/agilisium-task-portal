@@ -171,21 +171,30 @@ class BulkDownloadSubmissionsView(APIView):
 
         with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
             for sub in submissions:
-                if sub.file and os.path.exists(sub.file.path):
-                    user_first_name = sub.user.first_name.lower().replace(" ", "_")
-                    task_slug = re.sub(r'[^a-zA-Z0-9_]', '_', sub.assignment.task.title.lower())[:30]
-                    clean_file_name = re.sub(r'[^a-zA-Z0-9_.-]', '_', sub.file_name)
-                    
-                    formatted_name = f"Agilisium_All_Users_Proof/{user_first_name}_{task_slug}_{clean_file_name}"
-                    
-                    counter = 1
-                    base_name, ext = os.path.splitext(formatted_name)
-                    while formatted_name in used_filenames:
-                        formatted_name = f"{base_name}_{counter}{ext}"
-                        counter += 1
-                    used_filenames.add(formatted_name)
+                if sub.file:
+                    try:
+                        # Open and read file bytes directly (S3 & Local Storage Agnostic)
+                        sub.file.open('rb')
+                        file_content = sub.file.read()
+                        sub.file.close()
 
-                    zip_file.write(sub.file.path, arcname=formatted_name)
+                        user_first_name = (sub.user.first_name or sub.user.username).lower().replace(" ", "_")
+                        task_title = sub.assignment.task.title if sub.assignment and sub.assignment.task else 'task'
+                        task_slug = re.sub(r'[^a-zA-Z0-9_]', '_', task_title.lower())[:30]
+                        clean_file_name = re.sub(r'[^a-zA-Z0-9_.-]', '_', sub.file_name or 'file')
+                        
+                        formatted_name = f"Agilisium_All_Users_Proof/{user_first_name}_{task_slug}_{clean_file_name}"
+                        
+                        counter = 1
+                        base_name, ext = os.path.splitext(formatted_name)
+                        while formatted_name in used_filenames:
+                            formatted_name = f"{base_name}_{counter}{ext}"
+                            counter += 1
+                        used_filenames.add(formatted_name)
+
+                        zip_file.writestr(formatted_name, file_content)
+                    except Exception as e:
+                        print(f"Error reading file for submission {sub.id}: {e}")
 
         buffer.seek(0)
         response = HttpResponse(buffer.getvalue(), content_type='application/zip')
