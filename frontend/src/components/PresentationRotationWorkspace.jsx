@@ -471,10 +471,14 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
 
       {/* 👥 TAB 2: All Members List */}
       {activeTab === 'members' && (
-        <div className="glass-card rounded-2xl border border-slate-700 overflow-hidden bg-slate-900/60">
+        <div className={`rounded-2xl border overflow-hidden transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+        }`}>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-800/90 text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-700">
+              <thead className={`text-[11px] uppercase tracking-wider border-b ${
+                isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-[#061b27] text-slate-400 border-[#18485e]'
+              }`}>
                 <tr>
                   <th className="py-3.5 px-4">#</th>
                   <th className="py-3.5 px-4">Member Name</th>
@@ -486,42 +490,48 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className={`divide-y ${isLight ? 'divide-slate-200' : 'divide-slate-800'}`}>
                 {filteredMembers.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="py-8 text-center text-slate-400 font-medium">
+                    <td colSpan="8" className={`py-8 text-center font-medium ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                       No matching batch members found.
                     </td>
                   </tr>
                 ) : (
                   filteredMembers.map((m, idx) => (
-                    <tr key={m.id} className="hover:bg-slate-800/50 transition">
-                      <td className="py-3.5 px-4 text-slate-500 font-medium">{idx + 1}</td>
+                    <tr key={m.id} className={isLight ? 'hover:bg-slate-50' : 'hover:bg-white/5'}>
+                      <td className={`py-3.5 px-4 font-medium ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>{idx + 1}</td>
                       <td className="py-3.5 px-4">
                         <button
                           onClick={() => handleViewMemberHistory(m.id)}
-                          className="font-bold text-white hover:text-cyan-300 transition text-left cursor-pointer"
+                          className={`font-bold transition text-left cursor-pointer ${
+                            isLight ? 'text-slate-900 hover:text-teal-700' : 'text-white hover:text-cyan-300'
+                          }`}
                         >
                           {m.full_name}
                         </button>
                       </td>
-                      <td className="py-3.5 px-4 text-slate-400">{m.email}</td>
-                      <td className="py-3.5 px-4 font-semibold text-slate-300">Cycle {cycle.cycle_number || 1}</td>
+                      <td className={`py-3.5 px-4 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>{m.email}</td>
+                      <td className={`py-3.5 px-4 font-semibold ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>Cycle {cycle.cycle_number || 1}</td>
                       <td className="py-3.5 px-4">
                         {m.is_completed ? (
-                          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1">
+                          <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border inline-flex items-center gap-1 ${
+                            isLight ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                          }`}>
                             <CheckCircle2 className="w-3.5 h-3.5" /> ✓ Completed
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 inline-flex items-center gap-1">
+                          <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border inline-flex items-center gap-1 ${
+                            isLight ? 'bg-amber-50 text-amber-800 border-amber-300' : 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                          }`}>
                             <Clock className="w-3.5 h-3.5" /> ○ Pending
                           </span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-300 font-medium">
+                      <td className={`py-3.5 px-4 font-medium ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
                         {m.program_name || '—'}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-400">
+                      <td className={`py-3.5 px-4 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                         {m.completed_date || '—'}
                       </td>
                       <td className="py-3.5 px-4 text-right">
@@ -532,21 +542,23 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
                                 setSelectedMemberId(m.id);
                                 setShowAddModal(true);
                               }}
-                              className="px-2.5 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-[11px] transition cursor-pointer"
+                              className="px-2.5 py-1 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold text-[11px] transition cursor-pointer shadow-sm"
                             >
                               + Insert
                             </button>
                           )}
                           <button
                             onClick={() => handleViewMemberHistory(m.id)}
-                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 font-semibold text-[11px] border border-slate-700 transition cursor-pointer"
+                            className={`px-2.5 py-1 rounded-lg font-semibold text-[11px] border transition cursor-pointer ${
+                              isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-[#061b27] hover:bg-slate-700 text-cyan-400 border-[#18485e]'
+                            }`}
                           >
                             History
                           </button>
                           {m.is_completed && user?.role !== 'USER' && (
                             <button
                               onClick={() => setUndoItem({ explanation_id: m.explanation_id, member_name: m.full_name })}
-                              className="px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-semibold text-[11px] border border-rose-500/30 transition cursor-pointer"
+                              className="px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 font-semibold text-[11px] border border-rose-500/30 transition cursor-pointer"
                             >
                               Undo
                             </button>
@@ -566,39 +578,47 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
       {activeTab === 'daily' && (
         <div className="space-y-6">
           {(!dashboardData?.daily_history || dashboardData.daily_history.length === 0) ? (
-            <div className="glass-card p-12 text-center rounded-2xl border border-slate-700 bg-slate-900/40">
-              <Calendar className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-white">No daily explanation history recorded yet</h3>
-              <p className="text-xs text-slate-400 mt-1">Explanations will automatically be grouped by date here as they are added.</p>
+            <div className={`p-12 text-center rounded-2xl border ${
+              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+            }`}>
+              <Calendar className={`w-12 h-12 mx-auto mb-3 ${isLight ? 'text-slate-400' : 'text-slate-500'}`} />
+              <h3 className={`text-base font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>No daily explanation history recorded yet</h3>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Explanations will automatically be grouped by date here as they are added.</p>
             </div>
           ) : (
             dashboardData.daily_history.map((dayGroup) => (
-              <div key={dayGroup.date} className="glass-card rounded-2xl p-5 border border-slate-700 bg-slate-900/60 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div key={dayGroup.date} className={`rounded-2xl p-5 border space-y-4 transition-all ${
+                isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+              }`}>
+                <div className={`flex items-center justify-between border-b pb-3 ${
+                  isLight ? 'border-slate-200' : 'border-[#18485e]'
+                }`}>
                   <div className="flex items-center gap-2.5">
-                    <Calendar className="w-4 h-4 text-cyan-400" />
-                    <h3 className="text-sm font-bold text-white">{dayGroup.date}</h3>
+                    <Calendar className="w-4 h-4 text-teal-600" />
+                    <h3 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{dayGroup.date}</h3>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-700 border border-emerald-500/30">
                     {dayGroup.completed_count} Members Completed
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {dayGroup.explanations.map((exp) => (
-                    <div key={exp.id} className="p-3.5 rounded-xl bg-slate-800 border border-slate-700 flex items-start justify-between gap-3">
+                    <div key={exp.id} className={`p-3.5 rounded-xl border flex items-start justify-between gap-3 ${
+                      isLight ? 'bg-slate-50 border-slate-200 text-slate-900 shadow-xs' : 'bg-[#061b27] border-[#18485e] text-white'
+                    }`}>
                       <div>
-                        <p className="text-xs font-bold text-white flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <p className={`text-xs font-bold flex items-center gap-1.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                           <span>{exp.member_details?.full_name}</span>
                         </p>
                         {exp.program_name && (
-                          <p className="text-[11px] text-cyan-300 font-medium mt-1 truncate">
+                          <p className="text-[11px] text-teal-700 font-bold mt-1 truncate">
                             {exp.program_name}
                           </p>
                         )}
                         {exp.notes && (
-                          <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-2 italic">
+                          <p className={`text-[10px] mt-0.5 line-clamp-2 italic ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                             "{exp.notes}"
                           </p>
                         )}
@@ -607,7 +627,7 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
                       {user?.role !== 'USER' && (
                         <button
                           onClick={() => setUndoItem({ explanation_id: exp.id, member_name: exp.member_details?.full_name })}
-                          className="text-slate-500 hover:text-rose-400 transition cursor-pointer"
+                          className="text-slate-400 hover:text-rose-500 transition cursor-pointer"
                           title="Undo"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
@@ -626,33 +646,39 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
       {activeTab === 'cycles' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {cycleHistory.map((c) => (
-            <div key={c.id} className="glass-card p-5 rounded-2xl border border-slate-700 bg-slate-800/80 space-y-4">
+            <div key={c.id} className={`p-5 rounded-2xl border space-y-4 transition-all ${
+              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+            }`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider">Review Cycle</span>
-                  <h3 className="text-lg font-bold text-white">Cycle #{c.cycle_number}</h3>
+                  <span className="text-[11px] font-bold text-teal-700 uppercase tracking-wider">Review Cycle</span>
+                  <h3 className={`text-lg font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>Cycle #{c.cycle_number}</h3>
                 </div>
                 {c.status === 'COMPLETED' ? (
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-700 border border-emerald-500/40">
                     🎉 Completed
                   </span>
                 ) : (
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-teal-500/20 text-teal-700 border border-teal-500/40">
                     ⚡ In Progress
                   </span>
                 )}
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-slate-900 border border-slate-700">
-                  <span className="text-[10px] text-slate-400 block uppercase font-semibold">Explanations Finished</span>
-                  <p className="text-base font-extrabold text-white mt-0.5">
+                <div className={`p-3 rounded-xl border ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#061b27] border-[#18485e]'
+                }`}>
+                  <span className={`text-[10px] block uppercase font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Explanations Finished</span>
+                  <p className={`text-base font-extrabold mt-0.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>
                     {c.completed_count} / {c.total_members}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900 border border-slate-700">
-                  <span className="text-[10px] text-slate-400 block uppercase font-semibold">Start & End Date</span>
-                  <p className="text-xs font-bold text-cyan-300 mt-1">
+                <div className={`p-3 rounded-xl border ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#061b27] border-[#18485e]'
+                }`}>
+                  <span className={`text-[10px] block uppercase font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Start & End Date</span>
+                  <p className="text-xs font-bold text-teal-700 mt-1">
                     {c.start_date} {c.end_date ? `— ${c.end_date}` : '(Current)'}
                   </p>
                 </div>
