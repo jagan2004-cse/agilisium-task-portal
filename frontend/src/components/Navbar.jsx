@@ -204,13 +204,22 @@ export default function Navbar({ user, selectedBatch, setSelectedBatch, onLogout
                 theme === 'light' ? 'border-slate-200' : 'border-[#144052]'
               }`}>
                 <h4 className="text-xs font-bold uppercase tracking-wider">Notifications</h4>
-                {unreadCount > 0 && (
-                  <button onClick={() => notificationsAPI.markRead().then(fetchNotifications)} className={`text-[10px] hover:underline ${
-                    theme === 'light' ? 'text-teal-600' : 'text-[#56e3ce]'
-                  }`}>
-                    Mark read
+                <div className="flex items-center gap-2">
+                  {unreadCount > 0 && (
+                    <button onClick={() => notificationsAPI.markRead().then(fetchNotifications)} className={`text-[10px] font-bold hover:underline ${
+                      theme === 'light' ? 'text-teal-600' : 'text-[#56e3ce]'
+                    }`}>
+                      Mark read
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowNotifs(false)}
+                    className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+                    title="Close Notifications"
+                  >
+                    <X className="w-4 h-4" />
                   </button>
-                )}
+                </div>
               </div>
               <div className="max-h-64 overflow-y-auto space-y-2 text-xs">
                 {notifications.length === 0 ? (
