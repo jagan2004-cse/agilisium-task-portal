@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, CheckSquare, Calendar, Clock, Filter, Users, Check, Upload, AlertCircle, ShieldCheck, ShieldAlert, X, CheckCircle2, Trash2, FileText, Image as ImageIcon, Presentation, File, RefreshCw, Bookmark } from 'lucide-react';
 import { tasksAPI, authAPI } from '../api';
 
-export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
+export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey, theme = localStorage.getItem('theme') || 'dark' }) {
   const [tasks, setTasks] = useState([]);
   const [categories, setCategories] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
@@ -209,14 +209,18 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
     ? tasks.filter(t => !submittedTaskIds.includes(t.id))
     : tasks;
 
+  const isLight = theme === 'light';
+
   return (
     <div className="space-y-6">
       {/* Header Banner - Displayed ONLY for Admins */}
       {user?.role !== 'USER' && (
-        <div className="glass-card rounded-3xl p-6 bg-slate-800 border border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className={`rounded-3xl p-6 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
+        }`}>
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">Task Management Workspace</span>
-            <h2 className="text-2xl font-bold text-white mt-1">Agilisium Batch Tasks</h2>
+            <span className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-teal-700' : 'text-[#56e3ce]'}`}>Task Management Workspace</span>
+            <h2 className={`text-2xl font-bold mt-1 ${isLight ? 'text-slate-900' : 'text-white'}`}>Agilisium Batch Tasks</h2>
           </div>
 
           <button
@@ -224,7 +228,7 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
               resetForm();
               setShowCreateModal(true);
             }}
-            className="px-5 py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-xl flex items-center gap-2 cursor-pointer transition"
+            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#005f73] to-[#0a9396] hover:from-[#0a9396] hover:to-[#94d2bd] text-white font-bold text-xs shadow-xl flex items-center gap-2 cursor-pointer transition"
           >
             <Plus className="w-4 h-4" />
             <span>Create New Task</span>
@@ -238,8 +242,8 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
           onClick={() => setSelectedCategory('')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
             selectedCategory === ''
-              ? 'glass-option-active text-white'
-              : 'glass-option-btn text-slate-300'
+              ? 'bg-gradient-to-r from-[#005f73] to-[#0a9396] text-white border border-[#56e3ce] shadow-md'
+              : (isLight ? 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100' : 'bg-[#061b27] border border-[#18485e] text-slate-300 hover:bg-[#0d2836]')
           }`}
         >
           All Categories
@@ -251,8 +255,8 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
             onClick={() => setSelectedCategory(c.id)}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
               String(selectedCategory) === String(c.id)
-                ? 'glass-option-active text-white'
-                : 'glass-option-btn text-slate-300'
+                ? 'bg-gradient-to-r from-[#005f73] to-[#0a9396] text-white border border-[#56e3ce] shadow-md'
+                : (isLight ? 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100' : 'bg-[#061b27] border border-[#18485e] text-slate-300 hover:bg-[#0d2836]')
             }`}
           >
             {c.name}
@@ -263,12 +267,14 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
       {/* Task List Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {visibleTasks.length === 0 ? (
-          <div className="md:col-span-2 glass-card p-10 text-center text-slate-400 rounded-2xl border border-slate-700 bg-slate-800 space-y-2">
-            <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
-            <p className="font-bold text-white text-base">
+          <div className={`md:col-span-2 p-10 text-center rounded-2xl border space-y-2 ${
+            isLight ? 'bg-white border-slate-200 text-slate-600' : 'bg-[#09222f] border-[#144052] text-slate-400'
+          }`}>
+            <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
+            <p className={`font-bold text-base ${isLight ? 'text-slate-900' : 'text-white'}`}>
               {user?.role === 'USER' ? 'All Current Tasks Completed! 🎉' : 'No tasks created yet.'}
             </p>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-slate-500">
               {user?.role === 'USER'
                 ? 'Daily recurring tasks will reset at 12 AM for your next daily streak upload.'
                 : 'Click "Create New Task" above to assign tasks to batch engineers.'}
@@ -276,28 +282,38 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
           </div>
         ) : (
           visibleTasks.map((task) => (
-            <div key={task.id} className="glass-card rounded-2xl p-5 border border-slate-700 hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-4">
+            <div key={task.id} className={`rounded-2xl p-5 border transition-all flex flex-col justify-between space-y-4 ${
+              isLight ? 'bg-white border-slate-200 shadow-sm hover:border-teal-500' : 'bg-[#09222f] border-[#144052] hover:border-[#56e3ce]/50'
+            }`}>
               <div>
                 <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                  <span className={`text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-0.5 rounded-full border ${
+                    isLight ? 'bg-teal-50 text-teal-800 border-teal-200' : 'bg-cyan-500/20 text-[#56e3ce] border-cyan-500/40'
+                  }`}>
                     {task.category_name || 'General Task'}
                   </span>
 
                   <div className="flex items-center gap-1.5 flex-wrap">
                     {/* TASK RECURRENCE BADGE */}
                     {task.is_recurring || task.recurrence_type === 'DAILY' ? (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-900/60 text-cyan-300 border border-cyan-400/50 flex items-center gap-1">
-                        <RefreshCw className="w-3 h-3 text-cyan-400" />
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 ${
+                        isLight ? 'bg-cyan-50 text-cyan-800 border-cyan-200' : 'bg-cyan-900/60 text-cyan-300 border-cyan-400/50'
+                      }`}>
+                        <RefreshCw className="w-3 h-3 text-cyan-500" />
                         <span>Daily 12 AM Cycle</span>
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-700 flex items-center gap-1">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 ${
+                        isLight ? 'bg-indigo-50 text-indigo-800 border-indigo-200' : 'bg-indigo-950 text-indigo-300 border-indigo-700'
+                      }`}>
                         <Bookmark className="w-3 h-3" />
                         <span>One-Time Task</span>
                       </span>
                     )}
 
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-900 text-cyan-300 border border-slate-600 flex items-center gap-1">
+                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border flex items-center gap-1 ${
+                      isLight ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-slate-900 text-cyan-300 border-slate-600'
+                    }`}>
                       {task.allowed_format === 'PDF' && '📄 PDF Only'}
                       {task.allowed_format === 'PPT' && '📊 PPT Only'}
                       {task.allowed_format === 'DOC' && '📝 Word Doc Only'}
@@ -306,20 +322,20 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                     </span>
 
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                      task.priority === 'HIGH' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' :
-                      task.priority === 'MEDIUM' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' :
-                      'bg-slate-500/20 text-slate-300 border border-slate-500/40'
+                      task.priority === 'HIGH' ? 'bg-rose-500/20 text-rose-600 border border-rose-500/40' :
+                      task.priority === 'MEDIUM' ? 'bg-amber-500/20 text-amber-600 border border-amber-500/40' :
+                      'bg-slate-500/20 text-slate-600 border border-slate-500/40'
                     }`}>
                       {task.priority}
                     </span>
 
                     {task.approval_required ? (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-600 border border-purple-500/40 flex items-center gap-1">
                         <ShieldCheck className="w-3 h-3" />
                         <span>Needs Approval</span>
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 border border-emerald-500/40 flex items-center gap-1">
                         <ShieldAlert className="w-3 h-3" />
                         <span>Auto-Complete</span>
                       </span>
@@ -327,17 +343,19 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                   </div>
                 </div>
 
-                <h3 className="text-base font-bold text-white mt-2">{task.title}</h3>
-                {task.description && <p className="text-xs text-slate-300 mt-1">{task.description}</p>}
+                <h3 className={`text-base font-bold mt-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>{task.title}</h3>
+                {task.description && <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>{task.description}</p>}
               </div>
 
-              <div className="pt-3 border-t border-slate-700 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-3 text-slate-400 font-medium">
+              <div className={`pt-3 border-t flex items-center justify-between text-xs ${
+                isLight ? 'border-slate-200' : 'border-[#144052]'
+              }`}>
+                <div className="flex items-center gap-3 text-slate-500 font-medium">
                   <span className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-cyan-400" />
+                    <Calendar className="w-3.5 h-3.5 text-teal-600" />
                     <span>Due: {task.due_date}</span>
                   </span>
-                  <span className="flex items-center gap-1 text-cyan-300">
+                  <span className="flex items-center gap-1 text-teal-700 font-semibold">
                     <Clock className="w-3.5 h-3.5" />
                     <span>{task.due_time ? task.due_time.substring(0, 5) : '00:00'}</span>
                   </span>
@@ -345,10 +363,10 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
 
                 {user?.role !== 'USER' ? (
                   <div className="flex items-center gap-3">
-                    <span className="text-cyan-300 font-bold">{task.assigned_count || 0} Assigned</span>
+                    <span className="text-teal-700 font-bold">{task.assigned_count || 0} Assigned</span>
                     <button
                       onClick={() => handleDeleteTask(task.id, task.title)}
-                      className="p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 transition cursor-pointer"
+                      className="p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-500 border border-rose-500/30 transition cursor-pointer"
                       title="Delete Task"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -357,7 +375,7 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                 ) : (
                   <button
                     onClick={() => onOpenSubmitModal(task)}
-                    className="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                    className="px-3.5 py-1.5 rounded-xl bg-[#005f73] hover:bg-[#0a9396] text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>Submit Evidence</span>
@@ -372,16 +390,18 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
       {/* CREATE TASK MODAL */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85">
-          <div className="w-full max-w-xl bg-slate-800 rounded-3xl p-6 border border-slate-700 shadow-2xl space-y-4 max-h-[90vh] flex flex-col relative">
+          <div className={`w-full max-w-xl rounded-3xl p-6 border shadow-2xl space-y-4 max-h-[90vh] flex flex-col relative ${
+            isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#09222f] border-[#144052] text-white'
+          }`}>
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white">Create New Task & Assign Users</h3>
-              <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-white">
+              <h3 className="text-lg font-bold">Create New Task & Assign Users</h3>
+              <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {errorMsg && (
-              <div className="p-3 rounded-xl bg-rose-500/20 text-rose-300 text-xs font-semibold flex items-center gap-2 border border-rose-500/40">
+              <div className="p-3 rounded-xl bg-rose-500/20 text-rose-600 text-xs font-semibold flex items-center gap-2 border border-rose-500/40">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -389,41 +409,46 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
 
             <form onSubmit={handleCreateTask} className="space-y-4 text-xs flex-1 overflow-y-auto pr-1">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">New Task (Optional Custom Title)</label>
+                <label className="block font-semibold mb-1">New Task (Optional Custom Title)</label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. PySpark Window Functions & RDD Assessment (or leave blank to use Category name)"
-                  className="w-full px-3.5 py-2 rounded-xl glass-input text-white outline-none"
+                  className={`w-full px-3.5 py-2 rounded-xl outline-none border transition ${
+                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400' : 'bg-[#061b27] border-[#18485e] text-white placeholder:text-slate-500'
+                  }`}
                 />
               </div>
 
               {categories.length > 0 && (
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Category</label>
+                  <label className="block font-semibold mb-1">Category</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {categories.map((cat) => (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onClick={() => handleCategorySelect(cat.id)}
-                        className={`p-2.5 rounded-xl font-bold text-left transition cursor-pointer ${
-                          String(categoryId) === String(cat.id)
-                            ? 'glass-option-active text-white'
-                            : 'glass-option-btn text-slate-300'
-                        }`}
-                      >
-                        {cat.name}
-                      </button>
-                    ))}
+                    {categories.map((cat) => {
+                      const isSelected = String(categoryId) === String(cat.id);
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => handleCategorySelect(cat.id)}
+                          className={`p-2.5 rounded-xl font-bold text-left transition cursor-pointer border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#005f73] to-[#0a9396] text-white border-[#56e3ce] shadow-md'
+                              : (isLight ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#061b27] border-[#18485e] text-slate-300 hover:bg-[#0d2836]')
+                          }`}
+                        >
+                          {cat.name}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
 
               {/* TASK RECURRENCE / CYCLE OPTION SELECTOR */}
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Task Cycle / Recurrence Option</label>
+                <label className="block font-semibold mb-1">Task Cycle / Recurrence Option</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -434,14 +459,14 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                     }}
                     className={`p-3 rounded-2xl text-left border transition cursor-pointer ${
                       isRecurring
-                        ? 'bg-cyan-950 border-cyan-400 text-white shadow-md'
-                        : 'bg-slate-900 border-slate-700 text-slate-400'
+                        ? (isLight ? 'bg-cyan-50 border-cyan-500 text-cyan-900 shadow-md' : 'bg-cyan-950 border-cyan-400 text-white shadow-md')
+                        : (isLight ? 'bg-slate-50 border-slate-300 text-slate-600' : 'bg-[#061b27] border-[#18485e] text-slate-400')
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-xs text-cyan-300">🔄 Daily 12 AM Cycle Task</span>
+                      <span className="font-bold text-xs">🔄 Daily 12 AM Cycle Task</span>
                     </div>
-                    <p className="text-[10px] text-slate-300">Deadline sets to 12:00 AM Midnight. Task resets daily for a full 24h cycle once evidence is uploaded.</p>
+                    <p className="text-[10px] opacity-80">Deadline sets to 12:00 AM Midnight. Task resets daily for a full 24h cycle once evidence is uploaded.</p>
                   </button>
 
                   <button
@@ -453,21 +478,21 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                     }}
                     className={`p-3 rounded-2xl text-left border transition cursor-pointer ${
                       !isRecurring
-                        ? 'bg-indigo-950 border-indigo-400 text-white shadow-md'
-                        : 'bg-slate-900 border-slate-700 text-slate-400'
+                        ? (isLight ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-md' : 'bg-indigo-950 border-indigo-400 text-white shadow-md')
+                        : (isLight ? 'bg-slate-50 border-slate-300 text-slate-600' : 'bg-[#061b27] border-[#18485e] text-slate-400')
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-xs text-indigo-300">📌 One-Time Task</span>
+                      <span className="font-bold text-xs">📌 One-Time Task</span>
                     </div>
-                    <p className="text-[10px] text-slate-300">Single day task that permanently disappears once evidence is submitted.</p>
+                    <p className="text-[10px] opacity-80">Single day task that permanently disappears once evidence is submitted.</p>
                   </button>
                 </div>
               </div>
 
               {/* ALLOWED FILE FORMAT SELECTOR */}
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Allowed File Format Option</label>
+                <label className="block font-semibold mb-1">Allowed File Format Option</label>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                   {[
                     { id: 'PDF', label: 'PDF Only', ext: '.pdf', icon: '📄' },
@@ -475,90 +500,100 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                     { id: 'DOC', label: 'Word Doc', ext: '.doc, .docx', icon: '📝' },
                     { id: 'IMAGE', label: 'Image Only', ext: '.png, .jpg', icon: '🖼️' },
                     { id: 'ANY', label: 'Any Format', ext: '.zip, all', icon: '📁' },
-                  ].map((fmt) => (
-                    <button
-                      key={fmt.id}
-                      type="button"
-                      onClick={() => setAllowedFormat(fmt.id)}
-                      className={`p-2.5 rounded-xl text-left border transition cursor-pointer flex flex-col justify-between ${
-                        allowedFormat === fmt.id
-                          ? 'glass-option-active text-white border-cyan-400'
-                          : 'bg-slate-900 border-slate-700 text-slate-400'
-                      }`}
-                    >
-                      <div className="flex items-center gap-1 font-bold text-xs">
-                        <span>{fmt.icon}</span>
-                        <span className="truncate">{fmt.label}</span>
-                      </div>
-                      <span className="text-[9px] text-slate-400 mt-1">{fmt.ext}</span>
-                    </button>
-                  ))}
+                  ].map((fmt) => {
+                    const isSelected = allowedFormat === fmt.id;
+                    return (
+                      <button
+                        key={fmt.id}
+                        type="button"
+                        onClick={() => setAllowedFormat(fmt.id)}
+                        className={`p-2.5 rounded-xl text-left border transition cursor-pointer flex flex-col justify-between ${
+                          isSelected
+                            ? 'bg-gradient-to-r from-[#005f73] to-[#0a9396] text-white border-[#56e3ce] shadow-md'
+                            : (isLight ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#061b27] border-[#18485e] text-slate-400 hover:bg-[#0d2836]')
+                        }`}
+                      >
+                        <div className="flex items-center gap-1 font-bold text-xs">
+                          <span>{fmt.icon}</span>
+                          <span className="truncate">{fmt.label}</span>
+                        </div>
+                        <span className={`text-[9px] mt-1 ${isSelected ? 'text-white' : 'text-slate-400'}`}>{fmt.ext}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Due Date, Due Time & Priority Settings */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Due Date</label>
+                  <label className="block font-semibold mb-1">Due Date</label>
                   <input
                     type="date"
                     required
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl glass-input text-white outline-none"
+                    className={`w-full px-3.5 py-2 rounded-xl outline-none border transition ${
+                      isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-[#061b27] border-[#18485e] text-white'
+                    }`}
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Due Time (12:00 AM Midnight for Daily)</label>
+                  <label className="block font-semibold mb-1">Due Time (12:00 AM Midnight for Daily)</label>
                   <input
                     type="time"
                     required
                     value={dueTime}
                     onChange={(e) => setDueTime(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl glass-input text-white outline-none"
+                    className={`w-full px-3.5 py-2 rounded-xl outline-none border transition ${
+                      isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-[#061b27] border-[#18485e] text-white'
+                    }`}
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Priority Option</label>
+                  <label className="block font-semibold mb-1">Priority Option</label>
                   <div className="flex gap-1">
-                    {['LOW', 'MEDIUM', 'HIGH'].map((p) => (
-                      <button
-                        key={p}
-                        type="button"
-                        onClick={() => setPriority(p)}
-                        className={`flex-1 py-2 rounded-xl font-bold text-center transition text-[11px] cursor-pointer ${
-                          priority === p
-                            ? 'glass-option-active text-white'
-                            : 'glass-option-btn text-slate-400'
-                        }`}
-                      >
-                        {p}
-                      </button>
-                    ))}
+                    {['LOW', 'MEDIUM', 'HIGH'].map((p) => {
+                      const isSelected = priority === p;
+                      return (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setPriority(p)}
+                          className={`flex-1 py-2 rounded-xl font-bold text-center transition text-[11px] cursor-pointer border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#005f73] to-[#0a9396] text-white border-[#56e3ce] shadow-md'
+                              : (isLight ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#061b27] border-[#18485e] text-slate-400 hover:bg-[#0d2836]')
+                          }`}
+                        >
+                          {p}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
 
               {/* WORKFLOW APPROVAL OPTION SELECTOR */}
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Workflow Approval Option</label>
+                <label className="block font-semibold mb-1">Workflow Approval Option</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setApprovalRequired(true)}
                     className={`p-3 rounded-2xl text-left border transition cursor-pointer ${
                       approvalRequired
-                        ? 'bg-purple-900/50 border-purple-500 text-white shadow-md'
-                        : 'bg-slate-900/50 border-slate-700 text-slate-400'
+                        ? (isLight ? 'bg-purple-50 border-purple-500 text-purple-900 shadow-md' : 'bg-purple-900/50 border-purple-500 text-white shadow-md')
+                        : (isLight ? 'bg-slate-50 border-slate-300 text-slate-600' : 'bg-[#061b27] border-[#18485e] text-slate-400')
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-xs text-purple-300">Requires Admin Approval</span>
-                      <ShieldCheck className="w-4 h-4 text-purple-400" />
+                      <span className="font-bold text-xs">Requires Admin Approval</span>
+                      <ShieldCheck className="w-4 h-4 text-purple-500" />
                     </div>
-                    <p className="text-[10px] text-slate-300">Task stays in Pending Approval state until Admin reviews & approves.</p>
+                    <p className="text-[10px] opacity-80">Task stays in Pending Approval state until Admin reviews & approves.</p>
                   </button>
 
                   <button
@@ -566,35 +601,39 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                     onClick={() => setApprovalRequired(false)}
                     className={`p-3 rounded-2xl text-left border transition cursor-pointer ${
                       !approvalRequired
-                        ? 'bg-cyan-900/50 border-cyan-500 text-white shadow-md'
-                        : 'bg-slate-900/50 border-slate-700 text-slate-400'
+                        ? (isLight ? 'bg-teal-50 border-teal-500 text-teal-900 shadow-md' : 'bg-cyan-900/50 border-cyan-500 text-white shadow-md')
+                        : (isLight ? 'bg-slate-50 border-slate-300 text-slate-600' : 'bg-[#061b27] border-[#18485e] text-slate-400')
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-xs text-cyan-300">Auto-Completion</span>
-                      <ShieldAlert className="w-4 h-4 text-cyan-400" />
+                      <span className="font-bold text-xs">Auto-Completion</span>
+                      <ShieldAlert className="w-4 h-4 text-teal-500" />
                     </div>
-                    <p className="text-[10px] text-slate-300">Task automatically marks as Completed immediately upon evidence upload.</p>
+                    <p className="text-[10px] opacity-80">Task automatically marks as Completed immediately upon evidence upload.</p>
                   </button>
                 </div>
               </div>
 
               {/* User Assignee Selection Grid */}
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Assign to Participants ({selectedUserIds.length} Selected)</label>
-                <div className="max-h-36 overflow-y-auto space-y-1 p-2 rounded-xl bg-slate-900 border border-slate-700">
+                <label className="block font-semibold mb-1">Assign to Participants ({selectedUserIds.length} Selected)</label>
+                <div className={`max-h-36 overflow-y-auto space-y-1 p-2 rounded-xl border ${
+                  isLight ? 'bg-slate-50 border-slate-300' : 'bg-[#061b27] border-[#18485e]'
+                }`}>
                   {allUsers.map((u) => {
                     const isSelected = selectedUserIds.includes(u.id);
                     return (
-                      <label key={u.id} className={`flex items-center justify-between p-2 rounded-lg text-xs cursor-pointer ${
-                        isSelected ? 'bg-cyan-950 text-cyan-200 border border-cyan-800' : 'bg-slate-800 text-slate-400'
+                      <label key={u.id} className={`flex items-center justify-between p-2 rounded-lg text-xs cursor-pointer border ${
+                        isSelected
+                          ? (isLight ? 'bg-teal-50 border-teal-300 text-teal-900 font-semibold' : 'bg-cyan-950 border-cyan-800 text-cyan-200 font-semibold')
+                          : (isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-[#09222f] border-[#144052] text-slate-400')
                       }`}>
                         <span>{u.full_name}</span>
                         <input
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => toggleUserSelection(u.id)}
-                          className="w-4 h-4 accent-cyan-500 cursor-pointer"
+                          className="w-4 h-4 accent-teal-600 cursor-pointer"
                         />
                       </label>
                     );
@@ -602,11 +641,15 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey }) {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-700">
-                <button type="button" onClick={() => setShowCreateModal(false)} className="px-4 py-2 rounded-xl bg-slate-700 text-slate-200 font-bold cursor-pointer">
+              <div className={`flex items-center justify-end gap-3 pt-4 border-t ${
+                isLight ? 'border-slate-200' : 'border-[#144052]'
+              }`}>
+                <button type="button" onClick={() => setShowCreateModal(false)} className={`px-4 py-2 rounded-xl font-bold cursor-pointer ${
+                  isLight ? 'bg-slate-200 text-slate-700' : 'bg-slate-700 text-slate-200'
+                }`}>
                   Cancel
                 </button>
-                <button type="submit" disabled={loading} className="px-6 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 font-bold text-white shadow-lg cursor-pointer">
+                <button type="submit" disabled={loading} className="px-6 py-2 rounded-xl bg-gradient-to-r from-[#005f73] to-[#0a9396] hover:from-[#0a9396] hover:to-[#94d2bd] font-bold text-white shadow-lg cursor-pointer">
                   {loading ? 'Creating...' : 'Create & Assign Task'}
                 </button>
               </div>

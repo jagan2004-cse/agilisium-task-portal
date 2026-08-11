@@ -66,7 +66,7 @@
     color: #ffffff;
   }
 
-  /* Clean White Theme (Comprehensive Dark Text Contrast Overrides) */
+  /* Clean White Theme Style Rules */
   .theme-light {
     background-color: #f1f5f9 !important;
     color: #0f172a !important;
@@ -91,84 +91,28 @@
     box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.05) !important;
   }
 
-  .theme-light .glass-input {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    color: #0f172a !important;
+  /* Table Row Dividers & Borders */
+  table {
+    width: 100%;
+    border-collapse: collapse;
   }
 
-  .theme-light .glass-input:focus {
-    border-color: #0284c7 !important;
-    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2) !important;
+  .theme-light table tr {
+    border-bottom: 1px solid #e2e8f0 !important;
   }
 
-  .theme-light .glass-select {
-    background: #ffffff !important;
-    border: 1px solid #0284c7 !important;
-    color: #0284c7 !important;
-    font-weight: 700 !important;
-  }
-
-  .theme-light .glass-option-btn {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
+  .theme-light table th {
+    border-bottom: 2px solid #cbd5e1 !important;
     color: #334155 !important;
   }
 
-  .theme-light .glass-option-btn:hover {
-    background: #e2e8f0 !important;
-    border-color: #0284c7 !important;
-    color: #0f172a !important;
+  .theme-dark table tr {
+    border-bottom: 1px solid #144052 !important;
   }
 
-  .theme-light .glass-option-active {
-    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
-    border: 1px solid #0284c7 !important;
-    box-shadow: 0 4px 14px 0 rgba(2, 132, 199, 0.3) !important;
-    color: #ffffff !important;
-  }
-
-  /* Automatic Inversion of Light Text Colors on White Theme */
-  .theme-light .text-white,
-  .theme-light .text-slate-100,
-  .theme-light .text-slate-200 {
-    color: #0f172a !important;
-  }
-
-  .theme-light .text-slate-300,
-  .theme-light .text-slate-400 {
-    color: #334155 !important;
-  }
-
-  .theme-light .text-cyan-300,
-  .theme-light .text-cyan-400,
-  .theme-light .text-cyan-500 {
-    color: #0284c7 !important;
-  }
-
-  .theme-light aside {
-    background: #ffffff !important;
-    border-color: #cbd5e1 !important;
-  }
-
-  .theme-light header {
-    background: #ffffff !important;
-    border-color: #cbd5e1 !important;
-  }
-
-  .theme-light nav button {
-    color: #334155 !important;
-  }
-
-  .theme-light nav button:hover {
-    background: #e2e8f0 !important;
-    color: #0f172a !important;
-  }
-
-  .theme-light nav button.bg-gradient-to-r,
-  .theme-light button.bg-gradient-to-r,
-  .theme-light span.bg-gradient-to-r {
-    color: #ffffff !important;
+  .theme-dark table th {
+    border-bottom: 2px solid #18485e !important;
+    color: #94d2bd !important;
   }
 }
 
