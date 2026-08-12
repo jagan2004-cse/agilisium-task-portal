@@ -230,22 +230,15 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey, the
 
   return (
     <div className="space-y-6">
-      {/* Header Banner - Displayed ONLY for Admins */}
+      {/* Header Button - Displayed ONLY for Admins */}
       {user?.role !== 'USER' && (
-        <div className={`rounded-3xl p-6 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all ${
-          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
-        }`}>
-          <div>
-            <span className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-teal-700' : 'text-[#56e3ce]'}`}>Task Management Workspace</span>
-            <h2 className={`text-2xl font-bold mt-1 ${isLight ? 'text-slate-900' : 'text-white'}`}>Agilisium Batch Tasks</h2>
-          </div>
-
+        <div className="flex items-center justify-end">
           <button
             onClick={() => {
               resetForm();
               setShowCreateModal(true);
             }}
-            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#005f73] to-[#0a9396] hover:from-[#0a9396] hover:to-[#94d2bd] text-white font-bold text-xs shadow-xl flex items-center gap-2 cursor-pointer transition"
+            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#005f73] to-[#0a9396] hover:from-[#0a9396] hover:to-[#94d2bd] text-white font-extrabold text-xs shadow-xl flex items-center gap-2 cursor-pointer transition hover:scale-105"
           >
             <Plus className="w-4 h-4" />
             <span>Create New Task</span>
