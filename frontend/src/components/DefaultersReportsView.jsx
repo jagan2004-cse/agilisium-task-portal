@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Download, TrendingUp, Layers, Table, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, Download, TrendingUp, Layers, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { defaultersReportsAPI, tasksAPI } from '../api';
 
 export default function DefaultersReportsView({ theme = localStorage.getItem('theme') || 'dark' }) {
   const [defaultersData, setDefaultersData] = useState({ total_defaulters: 0, defaulters: [], grouped_defaulters: [] });
   const [tasks, setTasks] = useState([]);
   const [selectedTaskId, setSelectedTaskId] = useState('');
-  const [viewMode, setViewMode] = useState('grouped'); // 'grouped' or 'table'
 
   useEffect(() => {
     fetchTasks();
@@ -79,32 +78,13 @@ export default function DefaultersReportsView({ theme = localStorage.getItem('th
         </div>
       </div>
 
-      {/* View Mode Toggle Controls */}
+      {/* Subheader Counter Pill */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 bg-slate-800/40 p-1 rounded-xl border border-slate-700/60">
-          <button
-            onClick={() => setViewMode('grouped')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              viewMode === 'grouped'
-                ? 'bg-rose-500 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Grouped by Task ({defaultersData.grouped_defaulters?.length || 0})</span>
-          </button>
-
-          <button
-            onClick={() => setViewMode('table')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              viewMode === 'table'
-                ? 'bg-rose-500 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Table className="w-3.5 h-3.5" />
-            <span>All Defaulters List ({defaultersData.total_defaulters})</span>
-          </button>
+        <div className="flex items-center gap-2">
+          <Layers className="w-4 h-4 text-rose-500" />
+          <span className={`text-sm font-extrabold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+            Grouped Task Defaulter Breakdown ({defaultersData.grouped_defaulters?.length || 0} Active Tasks)
+          </span>
         </div>
 
         <span className="text-xs font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-600 border border-rose-500/40">
@@ -112,127 +92,81 @@ export default function DefaultersReportsView({ theme = localStorage.getItem('th
         </span>
       </div>
 
-      {/* VIEW 1: Grouped by Task View */}
-      {viewMode === 'grouped' && (
-        <div className="space-y-4">
-          {(!defaultersData.grouped_defaulters || defaultersData.grouped_defaulters.length === 0) ? (
-            <div className={`rounded-2xl p-12 text-center border ${
-              isLight ? 'bg-white border-slate-200' : 'bg-[#09222f] border-slate-700'
-            }`}>
-              <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-              <h3 className={`text-base font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>No Active Defaulters!</h3>
-              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                All batch members have submitted evidence for the selected task filter.
-              </p>
-            </div>
-          ) : (
-            defaultersData.grouped_defaulters.map((group) => (
-              <div
-                key={group.task_id}
-                className={`rounded-2xl p-6 border space-y-4 transition-all ${
-                  isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-rose-500/30'
-                }`}
-              >
-                <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b pb-3 ${
-                  isLight ? 'border-slate-200' : 'border-slate-800'
-                }`}>
-                  <div>
-                    <span className="text-[11px] font-extrabold text-teal-600 uppercase tracking-wider">Created Task</span>
-                    <h3 className={`text-lg font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>{group.task_title}</h3>
-                    <p className={`text-xs mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                      Deadline: <strong className="text-slate-800 dark:text-slate-200">{group.due_date} at {group.due_time}</strong>
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-rose-500/20 text-rose-600 border border-rose-500/40">
-                      {group.total_defaulters} Defaulters Pending Evidence
-                    </span>
-                    <button
-                      onClick={() => defaultersReportsAPI.exportExcel('defaulters', group.task_id)}
-                      className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold text-xs border border-rose-500/30 flex items-center gap-1.5 cursor-pointer transition"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Export Task Excel</span>
-                    </button>
-                  </div>
+      {/* Grouped by Task Layout */}
+      <div className="space-y-4">
+        {(!defaultersData.grouped_defaulters || defaultersData.grouped_defaulters.length === 0) ? (
+          <div className={`rounded-2xl p-12 text-center border ${
+            isLight ? 'bg-white border-slate-200' : 'bg-[#09222f] border-slate-700'
+          }`}>
+            <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+            <h3 className={`text-base font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>No Active Defaulters!</h3>
+            <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              All batch members have submitted evidence for the selected task filter.
+            </p>
+          </div>
+        ) : (
+          defaultersData.grouped_defaulters.map((group) => (
+            <div
+              key={group.task_id}
+              className={`rounded-2xl p-6 border space-y-4 transition-all ${
+                isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-rose-500/30'
+              }`}
+            >
+              <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b pb-3 ${
+                isLight ? 'border-slate-200' : 'border-slate-800'
+              }`}>
+                <div>
+                  <span className="text-[11px] font-extrabold text-teal-600 uppercase tracking-wider">Created Task</span>
+                  <h3 className={`text-lg font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>{group.task_title}</h3>
+                  <p className={`text-xs mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                    Deadline: <strong className="text-slate-800 dark:text-slate-200">{group.due_date} at {group.due_time}</strong>
+                  </p>
                 </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className={`text-[11px] uppercase tracking-wider border-b pb-2 ${
-                      isLight ? 'text-slate-600 border-slate-200' : 'text-slate-400 border-slate-800'
-                    }`}>
-                      <tr>
-                        <th className="pb-2 px-3">Batch User</th>
-                        <th className="pb-2 px-3">Company Email</th>
-                        <th className="pb-2 px-3">Overdue Duration</th>
-                        <th className="pb-2 px-3">Assignment Status</th>
-                        <th className="pb-2 px-3 text-right">Reminders</th>
-                      </tr>
-                    </thead>
-                    <tbody className={`divide-y ${isLight ? 'divide-slate-200' : 'divide-slate-800'}`}>
-                      {group.defaulters.map((u) => (
-                        <tr key={u.assignment_id} className={isLight ? 'hover:bg-slate-50' : 'hover:bg-white/5'}>
-                          <td className={`py-3 px-3 font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{u.user_name}</td>
-                          <td className={`py-3 px-3 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>{u.user_email}</td>
-                          <td className="py-3 px-3 font-extrabold text-rose-600">{u.days_late}</td>
-                          <td className="py-3 px-3 font-semibold text-amber-500 uppercase text-[10px]">{u.status}</td>
-                          <td className={`py-3 px-3 text-right ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>{u.reminder_count} Notifications</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="flex items-center gap-3">
+                  <span className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-rose-500/20 text-rose-600 border border-rose-500/40">
+                    {group.total_defaulters} Defaulters Pending Evidence
+                  </span>
+                  <button
+                    onClick={() => defaultersReportsAPI.exportExcel('defaulters', group.task_id)}
+                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold text-xs border border-rose-500/30 flex items-center gap-1.5 cursor-pointer transition"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Export Task Excel</span>
+                  </button>
                 </div>
               </div>
-            ))
-          )}
-        </div>
-      )}
 
-      {/* VIEW 2: All Defaulters Table View */}
-      {viewMode === 'table' && (
-        <div className={`rounded-2xl p-6 border transition-all ${
-          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-rose-500/30'
-        }`}>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className={`text-[11px] uppercase tracking-wider border-b pb-3 ${
-                isLight ? 'text-slate-600 border-slate-200' : 'text-slate-400 border-white/10'
-              }`}>
-                <tr>
-                  <th className="pb-3 px-3">Batch User</th>
-                  <th className="pb-3 px-3">Email Address</th>
-                  <th className="pb-3 px-3">Task Title</th>
-                  <th className="pb-3 px-3">Deadline (Date & Time)</th>
-                  <th className="pb-3 px-3">Overdue Status</th>
-                  <th className="pb-3 px-3">Reminders Sent</th>
-                </tr>
-              </thead>
-              <tbody className={`divide-y ${isLight ? 'divide-slate-200' : 'divide-white/5'}`}>
-                {defaultersData.defaulters.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className={`py-8 text-center ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                      🎉 No active defaulters! All batch users are on schedule.
-                    </td>
-                  </tr>
-                ) : (
-                  defaultersData.defaulters.map((d) => (
-                    <tr key={d.assignment_id} className={isLight ? 'hover:bg-slate-50' : 'hover:bg-white/5'}>
-                      <td className={`py-3.5 px-3 font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{d.user_name}</td>
-                      <td className={`py-3.5 px-3 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>{d.user_email}</td>
-                      <td className="py-3.5 px-3 text-teal-700 font-bold">{d.task_title}</td>
-                      <td className={`py-3.5 px-3 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>{d.due_date} at {d.due_time}</td>
-                      <td className="py-3.5 px-3 font-bold text-rose-600">{d.days_late}</td>
-                      <td className={`py-3.5 px-3 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>{d.reminder_count} Notifications</td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className={`text-[11px] uppercase tracking-wider border-b pb-2 ${
+                    isLight ? 'text-slate-600 border-slate-200' : 'text-slate-800'
+                  }`}>
+                    <tr>
+                      <th className="pb-2 px-3">Batch User</th>
+                      <th className="pb-2 px-3">Company Email</th>
+                      <th className="pb-2 px-3">Overdue Duration</th>
+                      <th className="pb-2 px-3">Assignment Status</th>
+                      <th className="pb-2 px-3 text-right">Reminders</th>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+                  </thead>
+                  <tbody className={`divide-y ${isLight ? 'divide-slate-200' : 'divide-slate-800'}`}>
+                    {group.defaulters.map((u) => (
+                      <tr key={u.assignment_id} className={isLight ? 'hover:bg-slate-50' : 'hover:bg-white/5'}>
+                        <td className={`py-3 px-3 font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{u.user_name}</td>
+                        <td className={`py-3 px-3 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>{u.user_email}</td>
+                        <td className="py-3 px-3 font-extrabold text-rose-600">{u.days_late}</td>
+                        <td className="py-3 px-3 font-semibold text-amber-500 uppercase text-[10px]">{u.status}</td>
+                        <td className={`py-3 px-3 text-right ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>{u.reminder_count} Notifications</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
