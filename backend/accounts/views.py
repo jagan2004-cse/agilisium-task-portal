@@ -14,8 +14,18 @@ from accounts.serializers import (
 )
 from logs.models import ActivityLog
 
+from django.db.models import Q
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
+        login_input = attrs.get(self.username_field) or self.initial_data.get('email') or self.initial_data.get('username')
+        password = attrs.get('password')
+
+        if login_input and password:
+            user_obj = User.objects.filter(Q(email__iexact=login_input) | Q(username__iexact=login_input)).first()
+            if user_obj and user_obj.check_password(password):
+                attrs[self.username_field] = getattr(user_obj, self.username_field, user_obj.username)
+
         data = super().validate(attrs)
         
         # Check email verification status for standard users

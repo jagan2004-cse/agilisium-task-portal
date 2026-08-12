@@ -132,9 +132,10 @@ class Command(BaseCommand):
                         "is_email_verified": True
                     }
                 )
-                if created:
-                    admin_obj.set_password("Admin123!")
-                    admin_obj.save()
+                admin_obj.set_password("Admin123!")
+                admin_obj.role = User.RoleChoices.ADMIN
+                admin_obj.is_email_verified = True
+                admin_obj.save()
                 admin_users.append(admin_obj)
 
             # Ensure default superadmin admin@agilisium.com remains intact
@@ -152,6 +153,7 @@ class Command(BaseCommand):
                 }
             )
             super_admin.set_password("Password123!")
+            super_admin.is_email_verified = True
             super_admin.save()
 
             # 5. Create 5 Core Tasks
@@ -194,11 +196,11 @@ class Command(BaseCommand):
                         "is_email_verified": True
                     }
                 )
-                if u_created or not u_obj.check_password("User123!"):
-                    u_obj.set_password("User123!")
-                    u_obj.role = u_data["role"]
-                    u_obj.batch = batch
-                    u_obj.save()
+                u_obj.set_password("User123!")
+                u_obj.role = u_data["role"]
+                u_obj.batch = batch
+                u_obj.is_email_verified = True
+                u_obj.save()
 
                 created_b12_users.append(u_obj)
 
