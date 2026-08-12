@@ -16,13 +16,20 @@ class DefaultersListView(APIView):
         current_date = now.date()
         current_time = now.time()
 
+        task_id = request.query_params.get('task_id')
+
         # Query all pending/rejected task assignments for non-archived tasks
         pending_assignments = TaskAssignment.objects.filter(
             status__in=[TaskAssignment.StatusChoices.PENDING, TaskAssignment.StatusChoices.REJECTED],
             task__is_archived=False
         ).select_related('task', 'user')
 
+        if task_id:
+            pending_assignments = pending_assignments.filter(task_id=task_id)
+
         results = []
+        grouped_map = {}
+
         for assign in pending_assignments:
             task = assign.task
             due_date = task.due_date
@@ -46,8 +53,9 @@ class DefaultersListView(APIView):
                 else:
                     overdue_str = f"{minutes_late} min(s) overdue"
 
-                results.append({
+                item = {
                     'assignment_id': assign.id,
+                    'task_id': task.id,
                     'user_name': assign.user.get_full_name(),
                     'user_email': assign.user.email,
                     'task_title': task.title,
@@ -56,11 +64,27 @@ class DefaultersListView(APIView):
                     'days_late': overdue_str,
                     'status': assign.status,
                     'reminder_count': assign.reminder_count
-                })
+                }
+
+                results.append(item)
+
+                # Group by Task ID
+                if task.id not in grouped_map:
+                    grouped_map[task.id] = {
+                        'task_id': task.id,
+                        'task_title': task.title,
+                        'due_date': str(due_date),
+                        'due_time': due_time.strftime('%I:%M %p') if hasattr(due_time, 'strftime') else str(due_time),
+                        'total_defaulters': 0,
+                        'defaulters': []
+                    }
+                grouped_map[task.id]['total_defaulters'] += 1
+                grouped_map[task.id]['defaulters'].append(item)
 
         return Response({
             'total_defaulters': len(results),
-            'defaulters': results
+            'defaulters': results,
+            'grouped_defaulters': list(grouped_map.values())
         })
 
 
@@ -83,6 +107,7 @@ class ExportExcelReportView(APIView):
             return Response({'detail': 'Authentication & Admin permissions required.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         report_type = request.query_params.get('type', 'completed')
+        task_id = request.query_params.get('task_id')
 
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -93,8 +118,12 @@ class ExportExcelReportView(APIView):
         if report_type == 'defaulters':
             ws.append(['User Name', 'Email', 'Task Title', 'Due Date', 'Due Time', 'Overdue Status', 'Status'])
             pending_assignments = TaskAssignment.objects.filter(
-                status__in=[TaskAssignment.StatusChoices.PENDING, TaskAssignment.StatusChoices.REJECTED]
+                status__in=[TaskAssignment.StatusChoices.PENDING, TaskAssignment.StatusChoices.REJECTED],
+                task__is_archived=False
             ).select_related('task', 'user')
+
+            if task_id:
+                pending_assignments = pending_assignments.filter(task_id=task_id)
 
             for d in pending_assignments:
                 task = d.task
@@ -127,6 +156,9 @@ class ExportExcelReportView(APIView):
                     TaskAssignment.StatusChoices.PENDING_APPROVAL
                 ]
             ).select_related('task', 'user', 'task__category')
+
+            if task_id:
+                completed_assignments = completed_assignments.filter(task_id=task_id)
 
             for a in completed_assignments:
                 task = a.task
