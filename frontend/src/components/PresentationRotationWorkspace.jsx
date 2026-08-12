@@ -229,13 +229,7 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
         isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
       }`}>
         <div>
-          <div className="flex items-center gap-2">
-            <span className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-teal-700' : 'text-cyan-400'}`}>Code Explanation & Review Manager</span>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/20 text-cyan-600 border border-cyan-500/40">
-              Cycle #{cycle.cycle_number || 1} • In Progress
-            </span>
-          </div>
-          <h2 className={`text-2xl font-bold mt-1 ${isLight ? 'text-slate-900' : 'text-white'}`}>Data Engineering Code Review Dashboard</h2>
+          <h2 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>Data Engineering Code Review Dashboard</h2>
         </div>
 
         {user?.role !== 'USER' && (
