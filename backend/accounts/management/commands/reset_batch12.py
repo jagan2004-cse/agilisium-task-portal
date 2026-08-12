@@ -6,6 +6,7 @@ from django.db import transaction
 from accounts.models import User, Batch
 from tasks.models import Task, TaskAssignment, Category
 from submissions.models import Submission
+from accounts.views import CustomTokenObtainPairSerializer
 
 NEW_BATCH_USERS = [
     {"first": "Jayashree", "last": "Sankar", "email": "Jayashree.Sankar@agilisium.com", "role": User.RoleChoices.USER},
@@ -51,24 +52,24 @@ CORE_TASKS = [
 ]
 
 class Command(BaseCommand):
-    help = 'Reset Batch 12 users, assignments, and evidence files with exact roster'
+    help = 'Purge all old users and create exact 27 Batch 12 Users + 2 Admins + Test Logins'
 
     def add_arguments(self, parser):
         parser.add_argument(
             '--confirm',
             action='store_true',
-            help='Confirm destructive reset of Batch 12 data',
+            help='Confirm destructive purge and reset of all users',
         )
 
     def handle(self, *args, **options):
         if not options['confirm']:
             self.stdout.write(self.style.WARNING(
-                "\nWARNING: This operation will replace existing Batch 12 users, task assignments, evidence metadata, and associated S3 files.\n"
+                "\nWARNING: This operation will purge ALL existing users and recreate exact 27 Batch 12 Users + 2 Admins.\n"
                 "To execute, run again with the --confirm flag: python manage.py reset_batch12 --confirm\n"
             ))
             return
 
-        self.stdout.write(self.style.NOTICE("Starting Batch 12 Reset Procedure..."))
+        self.stdout.write(self.style.NOTICE("Starting Full User Purge & Batch 12 Recreation Procedure..."))
 
         # 1. Get or Create Batch 12
         batch, _ = Batch.objects.get_or_create(
@@ -83,77 +84,53 @@ class Command(BaseCommand):
         )
 
         with transaction.atomic():
-            # 3. Clean up Old Batch 12 Users & Assignments
-            old_users = User.objects.filter(batch=batch)
-            old_user_count = old_users.count()
+            # 3. Purge All Existing Evidence, Assignments & Users
+            all_subs = Submission.objects.all()
+            sub_count = all_subs.count()
+            all_subs.delete()
 
-            # Delete old evidence submissions & assignments for Batch 12
-            old_submissions = Submission.objects.filter(user__in=old_users)
-            old_sub_count = old_submissions.count()
+            all_assigns = TaskAssignment.objects.all()
+            assign_count = all_assigns.count()
+            all_assigns.delete()
 
-            # Optional S3 cleanup
-            bucket = getattr(settings, 'AWS_STORAGE_BUCKET_NAME', None)
-            access_key = getattr(settings, 'AWS_ACCESS_KEY_ID', None)
-            if bucket and access_key:
-                try:
-                    s3_client = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY, region_name=settings.AWS_S3_REGION_NAME)
-                    for sub in old_submissions:
-                        if sub.s3_key:
-                            try:
-                                s3_client.delete_object(Bucket=bucket, Key=sub.s3_key)
-                            except Exception:
-                                pass
-                except Exception as e:
-                    self.stdout.write(self.style.WARNING(f"S3 cleanup note: {e}"))
+            all_users = User.objects.all()
+            user_count = all_users.count()
+            all_users.delete()
 
-            old_submissions.delete()
-
-            old_assignments = TaskAssignment.objects.filter(user__in=old_users)
-            old_assignments.delete()
-
-            old_users.delete()
-
-            self.stdout.write(self.style.SUCCESS(f"Removed {old_user_count} old Batch 12 users and {old_sub_count} evidence records."))
+            self.stdout.write(self.style.SUCCESS(f"Purged {user_count} old users, {assign_count} task assignments, and {sub_count} evidence records."))
 
             # 4. Create Administrators
             admin_users = []
             for adm in ADMINISTRATORS:
                 username = adm["email"].split('@')[0]
-                admin_obj, created = User.objects.get_or_create(
+                admin_obj = User.objects.create(
                     email=adm["email"],
-                    defaults={
-                        "username": username,
-                        "first_name": adm["first"],
-                        "last_name": adm["last"],
-                        "company": "Agilisium",
-                        "role": User.RoleChoices.ADMIN,
-                        "is_staff": True,
-                        "is_superuser": True,
-                        "is_email_verified": True
-                    }
+                    username=username,
+                    first_name=adm["first"],
+                    last_name=adm["last"],
+                    company="Agilisium",
+                    role=User.RoleChoices.ADMIN,
+                    is_staff=True,
+                    is_superuser=True,
+                    is_email_verified=True
                 )
                 admin_obj.set_password("Admin123!")
-                admin_obj.role = User.RoleChoices.ADMIN
-                admin_obj.is_email_verified = True
                 admin_obj.save()
                 admin_users.append(admin_obj)
 
-            # Ensure default superadmin admin@agilisium.com remains intact
-            super_admin, _ = User.objects.get_or_create(
+            # Create Superadmin admin@agilisium.com
+            super_admin = User.objects.create(
                 email="admin@agilisium.com",
-                defaults={
-                    "username": "admin",
-                    "first_name": "Agilisium",
-                    "last_name": "Admin",
-                    "company": "Agilisium",
-                    "role": User.RoleChoices.SUPER_ADMIN,
-                    "is_staff": True,
-                    "is_superuser": True,
-                    "is_email_verified": True
-                }
+                username="admin",
+                first_name="Agilisium",
+                last_name="Admin",
+                company="Agilisium",
+                role=User.RoleChoices.SUPER_ADMIN,
+                is_staff=True,
+                is_superuser=True,
+                is_email_verified=True
             )
             super_admin.set_password("Password123!")
-            super_admin.is_email_verified = True
             super_admin.save()
 
             # 5. Create 5 Core Tasks
@@ -184,43 +161,67 @@ class Command(BaseCommand):
 
             for u_data in NEW_BATCH_USERS:
                 username = u_data["email"].split('@')[0]
-                u_obj, u_created = User.objects.get_or_create(
+                u_obj = User.objects.create(
                     email=u_data["email"],
-                    defaults={
-                        "username": username,
-                        "first_name": u_data["first"],
-                        "last_name": u_data["last"],
-                        "company": "Agilisium",
-                        "batch": batch,
-                        "role": u_data["role"],
-                        "is_email_verified": True
-                    }
+                    username=username,
+                    first_name=u_data["first"],
+                    last_name=u_data["last"],
+                    company="Agilisium",
+                    batch=batch,
+                    role=u_data["role"],
+                    is_email_verified=True
                 )
                 u_obj.set_password("User123!")
-                u_obj.role = u_data["role"]
-                u_obj.batch = batch
-                u_obj.is_email_verified = True
                 u_obj.save()
 
                 created_b12_users.append(u_obj)
 
                 # Assign 5 tasks
                 for task in created_tasks:
-                    _, assign_created = TaskAssignment.objects.get_or_create(
+                    TaskAssignment.objects.create(
                         task=task,
                         user=u_obj,
-                        defaults={"status": TaskAssignment.StatusChoices.PENDING}
+                        status=TaskAssignment.StatusChoices.PENDING
                     )
-                    if assign_created:
-                        total_assignments_created += 1
+                    total_assignments_created += 1
 
         self.stdout.write(self.style.SUCCESS(
             f"\n=========================================================\n"
-            f"Batch 12 reset completed successfully!\n"
+            f"Batch 12 Reset Completed Successfully!\n"
             f"New Batch 12 Users created: {len(created_b12_users)}\n"
             f"Technical Users created: {sum(1 for u in created_b12_users if u.role == User.RoleChoices.TECHNICAL)}\n"
-            f"Administrators created: {len(ADMINISTRATORS) + 1}\n"
+            f"Administrators created: {len(ADMINISTRATORS)}\n"
             f"Tasks: {len(created_tasks)}\n"
-            f"Assignments created: {TaskAssignment.objects.filter(user__batch=batch).count()}\n"
+            f"Assignments created: {total_assignments_created}\n"
+            f"=========================================================\n"
+        ))
+
+        # 7. Automated Login Testing for 100% of Accounts
+        self.stdout.write("\nRunning Automated Login Authentication Tests for All Accounts...")
+        success_count = 0
+        failed_count = 0
+
+        accounts_to_test = [
+            (adm["email"], "Admin123!") for adm in ADMINISTRATORS
+        ] + [
+            ("admin@agilisium.com", "Password123!")
+        ] + [
+            (usr["email"], "User123!") for usr in NEW_BATCH_USERS
+        ]
+
+        for email, password in accounts_to_test:
+            serializer = CustomTokenObtainPairSerializer(data={'email': email, 'password': password})
+            if serializer.is_valid():
+                success_count += 1
+            else:
+                failed_count += 1
+                self.stdout.write(self.style.ERROR(f"[FAIL] Login failed for {email}: {serializer.errors}"))
+
+        self.stdout.write(self.style.SUCCESS(
+            f"\n=========================================================\n"
+            f"AUTHENTICATION TEST RESULTS\n"
+            f"Total Accounts Tested: {len(accounts_to_test)}\n"
+            f"Successful Logins: {success_count} / {len(accounts_to_test)} [PASS]\n"
+            f"Failed Logins: {failed_count}\n"
             f"=========================================================\n"
         ))
