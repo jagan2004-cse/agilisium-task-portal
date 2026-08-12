@@ -87,33 +87,22 @@ class SubmitTaskView(APIView):
 
         task = assignment.task
         
-        # Check if task is a Daily Recurring Task (12 AM to 12 AM completed 24h day cycle)
-        if task.is_recurring or task.recurrence_type == Task.RecurrenceChoices.DAILY:
-            # Record completion for today and reset assignment due date & time for tomorrow 12:00 AM
-            tomorrow = date.today() + timedelta(days=1)
-            task.due_date = tomorrow
-            task.due_time = time(0, 0, 0) # Exact 12:00 AM Midnight deadline
-            task.save()
-
-            assignment.status = TaskAssignment.StatusChoices.PENDING
-            assignment.completed_at = timezone.now()
-            assignment.save()
+        # Update assignment status upon evidence upload
+        if task.approval_required:
+            assignment.status = TaskAssignment.StatusChoices.PENDING_APPROVAL
+            admins = User.objects.filter(role__in=[User.RoleChoices.SUPER_ADMIN, User.RoleChoices.ADMIN])
+            for admin_user in admins:
+                Notification.objects.create(
+                    user=admin_user,
+                    title="Submission Pending Approval",
+                    message=f"{request.user.get_full_name()} submitted evidence for '{task.title}'.",
+                    type=Notification.TypeChoices.TASK_ASSIGNED
+                )
         else:
-            # One-Time Task
-            if task.approval_required:
-                assignment.status = TaskAssignment.StatusChoices.PENDING_APPROVAL
-                admins = User.objects.filter(role__in=[User.RoleChoices.SUPER_ADMIN, User.RoleChoices.ADMIN])
-                for admin_user in admins:
-                    Notification.objects.create(
-                        user=admin_user,
-                        title="Submission Pending Approval",
-                        message=f"{request.user.get_full_name()} submitted evidence for '{task.title}'.",
-                        type=Notification.TypeChoices.TASK_ASSIGNED
-                    )
-            else:
-                assignment.status = TaskAssignment.StatusChoices.COMPLETED
-                assignment.completed_at = timezone.now()
-            assignment.save()
+            assignment.status = TaskAssignment.StatusChoices.COMPLETED
+            assignment.completed_at = timezone.now()
+        
+        assignment.save()
 
         ActivityLog.objects.create(
             user=request.user,

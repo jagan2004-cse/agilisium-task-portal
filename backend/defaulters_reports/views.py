@@ -16,9 +16,10 @@ class DefaultersListView(APIView):
         current_date = now.date()
         current_time = now.time()
 
-        # Query all pending/rejected task assignments
+        # Query all pending/rejected task assignments for non-archived tasks
         pending_assignments = TaskAssignment.objects.filter(
-            status__in=[TaskAssignment.StatusChoices.PENDING, TaskAssignment.StatusChoices.REJECTED]
+            status__in=[TaskAssignment.StatusChoices.PENDING, TaskAssignment.StatusChoices.REJECTED],
+            task__is_archived=False
         ).select_related('task', 'user')
 
         results = []
