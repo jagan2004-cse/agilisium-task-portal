@@ -90,11 +90,7 @@ export default function AdminDashboard({ onNavigate, theme = localStorage.getIte
         isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
       }`}>
         <div>
-          <span className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-teal-700' : 'text-[#56e3ce]'}`}>Admin Control Center</span>
-          <h2 className={`text-2xl font-black mt-0.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>Dashboard View</h2>
-          <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-            Task & Defaulter Overview for <strong className="text-teal-600">Batch 12</strong>
-          </p>
+          <h2 className={`text-2xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>Dashboard View</h2>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
