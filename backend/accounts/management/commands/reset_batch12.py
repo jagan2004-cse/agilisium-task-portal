@@ -28,8 +28,8 @@ NEW_BATCH_USERS = [
     {"first": "Priyatharshini", "last": "Kannan", "email": "Priyatharshini.Kannan@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "PentelaAjay", "last": "Kumar", "email": "PentelaAjay.Kumar@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Sivakumar", "last": "NandaKumar", "email": "Sivakumar.NandaKumar@agilisium.com", "role": User.RoleChoices.USER},
-    {"first": "Jagan", "last": "Saravanan", "email": "Jagan.Saravanan@agilisium.com", "role": User.RoleChoices.TECHNICAL},
-    {"first": "Karthick", "last": "Saravanan", "email": "Karthick.Saravanan@agilisium.com", "role": User.RoleChoices.TECHNICAL},
+    {"first": "Jagan", "last": "Saravanan", "email": "Jagan.Saravanan@agilisium.com", "role": User.RoleChoices.USER},
+    {"first": "Karthick", "last": "Saravanan", "email": "Karthick.Saravanan@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Lakshan", "last": "VijayaSekar", "email": "Lakshan.VijayaSekar@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "MittapalliBhanu", "last": "Vardhanreddy", "email": "MittapalliBhanu.Vardhanreddy@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Yavvna Lakshmi", "last": "J", "email": "YavvnaLakshmi.Jaikumar@agilisium.com", "role": User.RoleChoices.USER},
@@ -79,8 +79,8 @@ class Command(BaseCommand):
 
         # 2. Get or Create Category
         category, _ = Category.objects.get_or_create(
-            name="Core Tasks",
-            defaults={"description": "Five Standard Evidence Tasks"}
+            name="Standard Tasks",
+            defaults={"description": "Batch 12 Standard Tasks"}
         )
 
         with transaction.atomic():
