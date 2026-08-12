@@ -91,7 +91,7 @@ export default function AdminDashboard({ onNavigate, theme = localStorage.getIte
       }`}>
         <div>
           <span className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-teal-700' : 'text-[#56e3ce]'}`}>Admin Control Center</span>
-          <h2 className={`text-2xl font-black mt-0.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>Agilisium Training Batch Analytics</h2>
+          <h2 className={`text-2xl font-black mt-0.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>Dashboard View</h2>
           <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
             Task & Defaulter Overview for <strong className="text-teal-600">Batch 12</strong>
           </p>
