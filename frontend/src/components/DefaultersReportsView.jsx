@@ -39,11 +39,7 @@ export default function DefaultersReportsView({ theme = localStorage.getItem('th
         isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
       }`}>
         <div>
-          <span className="text-xs font-extrabold text-rose-500 uppercase tracking-wider">Defaulter Tracking & Excel Reports</span>
-          <h2 className={`text-2xl font-black mt-0.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>Defaulters & Reports Hub</h2>
-          <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-            View & export defaulters grouped by each specific task created
-          </p>
+          <h2 className={`text-2xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>Defaulters & Reports Hub</h2>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
@@ -79,14 +75,7 @@ export default function DefaultersReportsView({ theme = localStorage.getItem('th
       </div>
 
       {/* Subheader Counter Pill */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-rose-500" />
-          <span className={`text-sm font-extrabold ${isLight ? 'text-slate-900' : 'text-white'}`}>
-            Grouped Task Defaulter Breakdown ({defaultersData.grouped_defaulters?.length || 0} Active Tasks)
-          </span>
-        </div>
-
+      <div className="flex items-center justify-end">
         <span className="text-xs font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-600 border border-rose-500/40">
           {defaultersData.total_defaulters} Total Defaulters Detected
         </span>
