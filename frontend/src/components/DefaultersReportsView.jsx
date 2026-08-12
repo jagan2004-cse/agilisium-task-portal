@@ -107,8 +107,10 @@ export default function DefaultersReportsView({ theme = localStorage.getItem('th
                 <div>
                   <span className="text-[11px] font-extrabold text-teal-600 uppercase tracking-wider">Created Task</span>
                   <h3 className={`text-lg font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>{group.task_title}</h3>
-                  <p className={`text-xs mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                    Deadline: <strong className="text-slate-800 dark:text-slate-200">{group.due_date} at {group.due_time}</strong>
+                  <p className={`text-xs font-bold mt-1 ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                    Deadline: <span className={`px-2 py-0.5 rounded-md font-extrabold ${
+                      isLight ? 'bg-slate-100 text-rose-700 border border-slate-300' : 'bg-slate-800 text-rose-300 border border-slate-700'
+                    }`}>{group.due_date} at {group.due_time}</span>
                   </p>
                 </div>
 

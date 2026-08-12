@@ -176,7 +176,9 @@ export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
                       )}
                     </div>
                     <p className="text-xs text-slate-300 mt-1">{task?.description}</p>
-                    <p className="text-[11px] text-slate-400 mt-1">Due Date: {task?.due_date} at {task?.due_time}</p>
+                    <p className="text-xs font-bold text-slate-200 mt-1">
+                      Due Date: <span className="text-cyan-300 font-extrabold">{task?.due_date} at {task?.due_time}</span>
+                    </p>
                   </div>
 
                   <div className="flex items-center gap-3">
