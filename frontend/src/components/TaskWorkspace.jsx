@@ -199,18 +199,29 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey, the
     }
   };
 
-  // Collect IDs of tasks for which the user has ALREADY submitted or completed evidence
-  const submittedTaskIds = userAssignments
-    .filter(a => ['PENDING_APPROVAL', 'SUBMITTED', 'APPROVED', 'COMPLETED'].includes(a.status))
-    .map(a => a.task_details?.id || a.task);
+  // Filter tasks for user view:
+  // For Daily Routine tasks (is_recurring=true or recurrence_type='DAILY'):
+  // Removed/disabled for the user once uploaded today. Automatically re-appears at 12:00 AM Midnight for the next day.
+  const todayStr = new Date().toISOString().split('T')[0];
 
-  // Filter tasks: Strictly filter by selectedCategory pill + user submission status
   const visibleTasks = tasks.filter(t => {
     if (selectedCategory && String(t.category) !== String(selectedCategory) && String(t.category_id) !== String(selectedCategory)) {
       return false;
     }
     if (user?.role === 'USER') {
-      return !submittedTaskIds.includes(t.id);
+      const assign = userAssignments.find(a => String(a.task_details?.id || a.task) === String(t.id));
+      if (assign && ['PENDING_APPROVAL', 'SUBMITTED', 'APPROVED', 'COMPLETED'].includes(assign.status)) {
+        const isDailyRoutine = t.is_recurring || t.recurrence_type === 'DAILY';
+        if (isDailyRoutine) {
+          const completedDateStr = assign.completed_at 
+            ? new Date(assign.completed_at).toISOString().split('T')[0]
+            : todayStr;
+          // Hide for remainder of today if submitted today. Re-appears automatically tomorrow at 12:00 AM
+          return completedDateStr !== todayStr;
+        }
+        // One-time task: hide permanently once completed
+        return false;
+      }
     }
     return true;
   });

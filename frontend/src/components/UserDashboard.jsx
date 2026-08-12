@@ -34,7 +34,25 @@ export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
   };
 
   // Filter tasks: Pending list ONLY shows tasks awaiting evidence submission!
-  const pendingAssignments = assignments.filter(a => a.status === 'PENDING' || a.status === 'REJECTED');
+  // For Daily Routine tasks, if submitted today, remove from pending list for rest of today; re-appears at 12:00 AM Midnight!
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  const pendingAssignments = assignments.filter(a => {
+    const isCompletedOrSubmitted = ['PENDING_APPROVAL', 'SUBMITTED', 'APPROVED', 'COMPLETED'].includes(a.status);
+    if (isCompletedOrSubmitted) {
+      const isDailyRoutine = a.task_details?.is_recurring || a.task_details?.recurrence_type === 'DAILY';
+      if (isDailyRoutine) {
+        const completedDateStr = a.completed_at 
+          ? new Date(a.completed_at).toISOString().split('T')[0]
+          : todayStr;
+        // If submitted today, hide for rest of today; re-appears automatically at 12:00 AM Midnight tomorrow
+        return completedDateStr !== todayStr;
+      }
+      return false;
+    }
+    return true;
+  });
+
   const completedAssignments = assignments.filter(a => a.status === 'APPROVED' || a.status === 'COMPLETED');
   const inReviewAssignments = assignments.filter(a => a.status === 'PENDING_APPROVAL' || a.status === 'SUBMITTED');
 
@@ -142,6 +160,11 @@ export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
                       }`}>
                         {task?.priority}
                       </span>
+                      {(task?.is_recurring || task?.recurrence_type === 'DAILY') && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-teal-500/20 text-teal-300 border border-teal-500/40">
+                          🔁 Daily Routine (Resets at 12:00 AM)
+                        </span>
+                      )}
                       {task?.approval_required ? (
                         <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40">
                           Requires Approval
