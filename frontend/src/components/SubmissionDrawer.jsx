@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import axios from 'axios';
 import { UploadCloud, File, Image as ImageIcon, X, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { submissionsAPI } from '../api';
 
@@ -87,23 +88,42 @@ export default function SubmissionDrawer({ assignment, onClose, onSuccess, theme
     setLoading(true);
     setError('');
 
-    const formData = new FormData();
-    if (assignment?.id) {
-      formData.append('assignment_id', assignment.id);
-    }
-    const targetTaskId = assignment?.task_id || assignment?.task?.id || assignment?.id;
-    if (targetTaskId) {
-      formData.append('task_id', targetTaskId);
-    }
-    formData.append('file', file);
-    formData.append('comments', comments);
-
     try {
-      await submissionsAPI.submitEvidence(formData);
+      const targetTaskId = assignment?.task_id || assignment?.task?.id || assignment?.id;
+      const targetAssignmentId = assignment?.id;
+
+      // 1. Request AWS S3 Presigned Upload URL from Backend API
+      const urlRes = await submissionsAPI.getS3UploadURL({
+        task_id: targetTaskId,
+        assignment_id: targetAssignmentId,
+        filename: file.name,
+        file_size: file.size,
+        content_type: file.type || 'application/octet-stream'
+      });
+
+      const { upload_url, s3_key, s3_bucket } = urlRes.data;
+
+      // 2. Direct Client Upload to AWS S3 Bucket
+      await axios.put(upload_url, file, {
+        headers: { 'Content-Type': file.type || 'application/octet-stream' }
+      });
+
+      // 3. Confirm S3 Upload with Backend API to store object key in Database
+      await submissionsAPI.confirmS3Upload({
+        task_id: targetTaskId,
+        assignment_id: targetAssignmentId,
+        s3_key,
+        s3_bucket,
+        file_name: file.name,
+        file_type: file.type || 'application/octet-stream',
+        file_size: file.size,
+        comments
+      });
+
       onSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to submit evidence.');
+      setError(err.response?.data?.detail || err.message || 'Failed to submit evidence to AWS S3.');
     } finally {
       setLoading(false);
     }

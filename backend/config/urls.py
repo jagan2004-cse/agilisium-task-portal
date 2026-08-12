@@ -10,7 +10,10 @@ from accounts.views import (
     ForgotPasswordRequestView, ForgotPasswordVerifyView, ForgotPasswordResetView
 )
 from tasks.views import CategoryViewSet, TaskViewSet, TaskAssignmentViewSet
-from submissions.views import SubmitTaskView, SubmissionViewSet, BulkDownloadSubmissionsView
+from submissions.views import (
+    SubmitTaskView, SubmissionViewSet, BulkDownloadSubmissionsView,
+    GenerateUploadURLView, ConfirmUploadView, DownloadURLView, DeleteEvidenceView
+)
 from approvals.views import ReviewSubmissionView
 from rotation.views import (
     CodeReviewDashboardView, CodeExplanationView, BulkSeedExplanationsView, MembersStatusListView,
@@ -46,7 +49,11 @@ urlpatterns = [
     path('api/auth/change-password/', ChangePasswordView.as_view(), name='change-password'),
     path('api/users/', UserListView.as_view(), name='user-list'),
 
-    # Submissions & Approvals
+    # Submissions & AWS S3 Evidence Presigned Management
+    path('api/submissions/upload-url/', GenerateUploadURLView.as_view(), name='s3-upload-url'),
+    path('api/submissions/confirm/', ConfirmUploadView.as_view(), name='s3-confirm-upload'),
+    path('api/submissions/<int:submission_id>/download-url/', DownloadURLView.as_view(), name='s3-download-url'),
+    path('api/submissions/<int:submission_id>/delete/', DeleteEvidenceView.as_view(), name='s3-delete-evidence'),
     path('api/submissions/submit/', SubmitTaskView.as_view(), name='submit-task'),
     path('api/submissions/bulk-download/', BulkDownloadSubmissionsView.as_view(), name='bulk-download'),
     path('api/approvals/review/', ReviewSubmissionView.as_view(), name='review-submission'),

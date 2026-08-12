@@ -6,15 +6,25 @@ import {
   FileCheck2,
   Video,
   Presentation,
-  CheckCircle2
+  CheckCircle2,
+  Folder,
+  FileText,
+  Eye,
+  Download,
+  Trash2,
+  ExternalLink
 } from 'lucide-react';
-import { tasksAPI, rotationAPI } from '../api';
+import { tasksAPI, rotationAPI, submissionsAPI } from '../api';
 import PresentationSubmissionModal from './PresentationSubmissionModal';
+import EvidenceUploadModal from './EvidenceUploadModal';
 
 export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
   const [assignments, setAssignments] = useState([]);
   const [rotationSchedules, setRotationSchedules] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
   const [selectedPresentation, setSelectedPresentation] = useState(null);
+  const [uploadModalAssignment, setUploadModalAssignment] = useState(null);
+  const [activeFolderTask, setActiveFolderTask] = useState(null);
 
   useEffect(() => {
     fetchUserData();
@@ -22,19 +32,19 @@ export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
 
   const fetchUserData = async () => {
     try {
-      const [assignRes, rotationRes] = await Promise.all([
+      const [assignRes, rotationRes, subRes] = await Promise.all([
         tasksAPI.getAssignments(),
-        rotationAPI.getSchedules()
+        rotationAPI.getSchedules(),
+        submissionsAPI.getSubmissions()
       ]);
       setAssignments(assignRes.data);
       setRotationSchedules(rotationRes.data.results || rotationRes.data);
+      setSubmissions(subRes.data.results || subRes.data);
     } catch (err) {
       console.error('Failed to load user dashboard data', err);
     }
   };
 
-  // Filter tasks: Pending list ONLY shows tasks awaiting evidence submission!
-  // For Daily Routine tasks, if submitted today, remove from pending list for rest of today; re-appears at 12:00 AM Midnight!
   const todayStr = new Date().toISOString().split('T')[0];
 
   const pendingAssignments = assignments.filter(a => {
@@ -45,7 +55,6 @@ export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
         const completedDateStr = a.completed_at 
           ? new Date(a.completed_at).toISOString().split('T')[0]
           : todayStr;
-        // If submitted today, hide for rest of today; re-appears automatically at 12:00 AM Midnight tomorrow
         return completedDateStr !== todayStr;
       }
       return false;
@@ -56,23 +65,43 @@ export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
   const completedAssignments = assignments.filter(a => a.status === 'APPROVED' || a.status === 'COMPLETED');
   const inReviewAssignments = assignments.filter(a => a.status === 'PENDING_APPROVAL' || a.status === 'SUBMITTED');
 
-  // Find logged-in user's upcoming presentation
   const myUpcomingPresentation = rotationSchedules.find(
     s => s.presenter === user.id && (s.status === 'SCHEDULED' || s.status === 'RESCHEDULED' || s.status === 'REMINDER_SENT')
   );
+
+  const handleDownloadPresigned = async (submissionId) => {
+    try {
+      const res = await submissionsAPI.getDownloadURL(submissionId);
+      if (res.data.download_url) {
+        window.open(res.data.download_url, '_blank');
+      }
+    } catch (err) {
+      alert('Failed to generate presigned download URL');
+    }
+  };
+
+  const handleDeleteEvidence = async (submissionId) => {
+    if (!window.confirm('Are you sure you want to delete this uploaded evidence file?')) return;
+    try {
+      await submissionsAPI.deleteEvidence(submissionId);
+      fetchUserData();
+    } catch (err) {
+      alert('Failed to delete evidence file.');
+    }
+  };
 
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
       <div className="glass-card rounded-3xl p-6 bg-slate-800 border border-slate-700 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">Welcome Back</span>
-          <h2 className="text-2xl font-bold text-white mt-1">{user?.full_name}</h2>
-          <p className="text-xs text-slate-300 mt-1">Agilisium Batch Engineer • Data Engineering & AI</p>
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-400">AWS S3 Evidence Portal</span>
+          <h2 className="text-2xl font-black text-white mt-1">{user?.full_name} ({user?.username})</h2>
+          <p className="text-xs text-slate-300 mt-1">S3 Bucket: <code className="text-teal-400 font-mono">agilisium-task-portal-evidence</code> • Key Prefix: <code className="text-teal-400 font-mono">users/{user?.username}/</code></p>
         </div>
       </div>
 
-      {/* MY UPCOMING PRESENTATION BANNER CARD */}
+      {/* Upcoming Presentation Banner */}
       {myUpcomingPresentation && (
         <div className="glass-card rounded-3xl p-6 bg-slate-800 border-2 border-purple-500/50 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
@@ -111,13 +140,13 @@ export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
         <div className="glass-card p-5 rounded-2xl border-l-4 border-amber-400">
           <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pending Action Tasks</span>
           <p className="text-3xl font-extrabold text-white mt-2">{pendingAssignments.length}</p>
-          <p className="text-[11px] text-amber-300 mt-1">Awaiting Evidence Upload</p>
+          <p className="text-[11px] text-amber-300 mt-1">Awaiting S3 Evidence Upload</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl border-l-4 border-cyan-400">
+        <div className="glass-card p-5 rounded-2xl border-l-4 border-teal-400">
           <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted / Under Review</span>
           <p className="text-3xl font-extrabold text-white mt-2">{inReviewAssignments.length}</p>
-          <p className="text-[11px] text-cyan-300 mt-1">Evidence Submitted</p>
+          <p className="text-[11px] text-teal-300 mt-1">S3 Files Stored</p>
         </div>
 
         <div className="glass-card p-5 rounded-2xl border-l-4 border-emerald-400">
@@ -127,75 +156,148 @@ export default function UserDashboard({ user, onOpenSubmitModal, refreshKey }) {
         </div>
       </div>
 
-      {/* Assigned Tasks Matrix - ONLY SHOW PENDING UN-SUBMITTED TASKS */}
-      <div className="glass-card rounded-2xl p-6">
+      {/* 📁 Core Tasks Evidence Folders View */}
+      <div className="glass-card rounded-2xl p-6 bg-slate-900 border border-slate-800">
         <h3 className="text-base font-bold text-white mb-4 flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <CheckSquare className="w-5 h-5 text-cyan-400" />
-            <span>Pending Assigned Tasks ({pendingAssignments.length})</span>
+            <Folder className="w-5 h-5 text-teal-400" />
+            <span>My Core Task Evidence Folders</span>
           </span>
-          <span className="text-xs font-medium text-slate-400">Tasks disappear automatically upon evidence submission</span>
+          <span className="text-xs font-medium text-slate-400">AWS S3 Path: users/{user?.username}/</span>
         </h3>
 
-        {pendingAssignments.length === 0 ? (
-          <div className="p-8 text-center bg-slate-900/50 rounded-xl border border-slate-700 space-y-2">
-            <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-            <h4 className="text-sm font-bold text-white">All Caught Up! 🎉</h4>
-            <p className="text-xs text-slate-400">You have no pending assigned tasks awaiting submission. Submitted tasks can be viewed under "My Submissions".</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {pendingAssignments.map((assignment) => {
-              const task = assignment.task_details;
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {assignments.map((assignment) => {
+            const task = assignment.task_details || assignment.task;
+            const taskSubmissions = submissions.filter(s => s.assignment === assignment.id || s.assignment_details?.id === assignment.id);
+            const isCompleted = ['APPROVED', 'COMPLETED'].includes(assignment.status);
 
-              return (
-                <div key={assignment.id} className="p-4 rounded-xl glass-card bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                  <div>
+            return (
+              <div
+                key={assignment.id}
+                className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 hover:border-teal-500/60 transition-all flex flex-col justify-between space-y-4"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-bold text-sm text-white">{task?.title}</h4>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                        task?.priority === 'HIGH' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' :
-                        task?.priority === 'MEDIUM' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' :
-                        'bg-slate-500/20 text-slate-300 border border-slate-500/40'
-                      }`}>
-                        {task?.priority}
-                      </span>
-                      {(task?.is_recurring || task?.recurrence_type === 'DAILY') && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-teal-500/20 text-teal-300 border border-teal-500/40">
-                          🔁 Daily Routine (Resets at 12:00 AM)
-                        </span>
-                      )}
-                      {task?.approval_required ? (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40">
-                          Requires Approval
-                        </span>
-                      ) : (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                          Auto-Complete
-                        </span>
-                      )}
+                      <Folder className="w-6 h-6 text-amber-400" />
+                      <span className="text-xs font-extrabold text-white truncate max-w-[160px]">{task?.title}</span>
                     </div>
-                    <p className="text-xs text-slate-300 mt-1">{task?.description}</p>
-                    <p className="text-xs font-bold text-slate-200 mt-1">
-                      Due Date: <span className="text-cyan-300 font-extrabold">{task?.due_date} at {task?.due_time}</span>
-                    </p>
+
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                      isCompleted ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' :
+                      assignment.status === 'PENDING_APPROVAL' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' :
+                      'bg-slate-500/20 text-slate-300 border border-slate-500/40'
+                    }`}>
+                      {assignment.status}
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <p className="text-xs text-slate-400 line-clamp-2">{task?.description}</p>
+                  
+                  <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                    <span>Evidence Files: <strong className="text-teal-400">{taskSubmissions.length} files</strong></span>
+                    <span>Format: <strong className="text-white">{task?.allowed_format || 'ANY'}</strong></span>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-700/60 flex items-center justify-between gap-2">
+                  {taskSubmissions.length > 0 && (
                     <button
-                      onClick={() => onOpenSubmitModal(assignment)}
-                      className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-lg flex items-center gap-2 cursor-pointer transition"
+                      onClick={() => setActiveFolderTask({ assignment, taskSubmissions })}
+                      className="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-teal-300 font-bold text-xs flex items-center gap-1 cursor-pointer transition"
                     >
-                      <Upload className="w-4 h-4" />
-                      <span>Upload Evidence</span>
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>View Files ({taskSubmissions.length})</span>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => setUploadModalAssignment(assignment)}
+                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-extrabold text-xs flex items-center gap-1 shadow-md cursor-pointer transition ml-auto"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Upload to S3</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Task Evidence Files Drawer Modal */}
+      {activeFolderTask && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+          <div className="w-full max-w-2xl rounded-3xl p-6 bg-[#09222f] border border-[#144052] text-white shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <Folder className="w-6 h-6 text-amber-400" />
+                <div>
+                  <h3 className="text-base font-bold">{activeFolderTask.assignment.task_details?.title}</h3>
+                  <p className="text-xs text-slate-400">Canonical Path: <code className="text-teal-400 font-mono">users/{user?.username}/...</code></p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setActiveFolderTask(null)}
+                className="px-3 py-1 rounded-xl bg-slate-800 text-slate-400 hover:text-white text-xs font-bold"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+              {activeFolderTask.taskSubmissions.map((sub) => (
+                <div key={sub.id} className="p-3.5 rounded-xl bg-[#061b27] border border-[#18485e] flex items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <FileText className="w-5 h-5 text-teal-400 shrink-0" />
+                    <div className="truncate">
+                      <p className="font-bold truncate text-white">{sub.file_name}</p>
+                      <p className="text-[10px] text-slate-400 font-mono truncate">S3 Key: {sub.s3_key || 'Uploaded'}</p>
+                      <p className="text-[10px] text-slate-500">
+                        Uploaded on {new Date(sub.submitted_at).toLocaleDateString()} • {(sub.file_size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => handleDownloadPresigned(sub.id)}
+                      className="px-3 py-1.5 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 font-bold text-[11px] flex items-center gap-1 cursor-pointer transition"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteEvidence(sub.id)}
+                      className="p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/40 transition cursor-pointer"
+                      title="Delete Evidence"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Direct AWS S3 Presigned Upload Modal */}
+      {uploadModalAssignment && (
+        <EvidenceUploadModal
+          assignment={uploadModalAssignment}
+          isOpen={!!uploadModalAssignment}
+          onClose={() => setUploadModalAssignment(null)}
+          onSuccess={() => {
+            setUploadModalAssignment(null);
+            fetchUserData();
+          }}
+          theme="dark"
+        />
+      )}
 
       {/* Presentation Evidence Modal */}
       {selectedPresentation && (

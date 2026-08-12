@@ -39,6 +39,10 @@ export const tasksAPI = {
 };
 
 export const submissionsAPI = {
+  getS3UploadURL: (data) => API.post('/submissions/upload-url/', data),
+  confirmS3Upload: (data) => API.post('/submissions/confirm/', data),
+  getDownloadURL: (submissionId) => API.get(`/submissions/${submissionId}/download-url/`),
+  deleteEvidence: (submissionId) => API.delete(`/submissions/${submissionId}/delete/`),
   submitEvidence: (formData) => API.post('/submissions/submit/', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
