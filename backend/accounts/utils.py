@@ -32,12 +32,12 @@ def create_and_send_otp(user, email, purpose=EmailOTP.PurposeChoices.VERIFY):
     )
 
     action_title = "Email Verification Code" if purpose == EmailOTP.PurposeChoices.VERIFY else "Password Reset Verification Code"
-    subject = f"Agilisium TRACKSPRINT — {action_title}"
+    subject = f"Agilisium INTERNSYNC — {action_title}"
     
     html_message = f"""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; rounded: 16px; background-color: #ffffff;">
         <div style="text-align: center; margin-bottom: 24px;">
-            <h2 style="color: #00a8b5; font-size: 24px; margin: 0;">AGILISIUM TRACKSPRINT</h2>
+            <h2 style="color: #00a8b5; font-size: 24px; margin: 0;">AGILISIUM INTERNSYNC</h2>
             <p style="color: #64748b; font-size: 13px; margin-top: 4px;">Task & Evidence Automation Portal</p>
         </div>
         <div style="padding: 20px; background-color: #f8fafc; border-radius: 12px; margin-bottom: 20px;">
@@ -61,7 +61,7 @@ def create_and_send_otp(user, email, purpose=EmailOTP.PurposeChoices.VERIFY):
     </div>
     """
 
-    plain_message = f"Your Agilisium TRACKSPRINT {action_title} is: {otp_code}. Valid for 10 minutes."
+    plain_message = f"Your Agilisium INTERNSYNC {action_title} is: {otp_code}. Valid for 10 minutes."
 
     try:
         send_mail(
