@@ -9,7 +9,8 @@ import {
   History,
   LogOut,
   Dices,
-  BookOpen
+  BookOpen,
+  Cpu
 } from 'lucide-react';
 
 export default function GlassSidebar({ activeTab, setActiveTab, user, onLogout, theme = localStorage.getItem('theme') || 'dark' }) {
@@ -20,6 +21,7 @@ export default function GlassSidebar({ activeTab, setActiveTab, user, onLogout, 
     { id: 'rotation', label: 'Code Review Tracker', icon: BookOpen },
     { id: 'submissions', label: user?.role !== 'USER' ? 'Submissions and Approvals' : 'My Submissions', icon: UploadCloud },
     { id: 'storage', label: 'Storage & Files', icon: HardDrive },
+    { id: 'technical', label: 'Technical Diagnostics', icon: Cpu, technicalOnly: true },
     { id: 'defaulters', label: 'Defaulters & Reports', icon: AlertTriangle, adminOnly: true },
     { id: 'logs', label: 'Audit Logs', icon: History, adminOnly: true },
   ];
@@ -34,6 +36,7 @@ export default function GlassSidebar({ activeTab, setActiveTab, user, onLogout, 
       <nav className="space-y-1.5 overflow-y-auto pr-1">
         {menuItems.map((item) => {
           if (item.adminOnly && user?.role === 'USER') return null;
+          if (item.technicalOnly && user?.role === 'USER') return null;
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           return (

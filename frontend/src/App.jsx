@@ -10,6 +10,7 @@ import AdminApprovalHub from './components/AdminApprovalHub';
 import DefaultersReportsView from './components/DefaultersReportsView';
 import StorageAnalyticsView from './components/StorageAnalyticsView';
 import ActivityLogsView from './components/ActivityLogsView';
+import TechnicalDashboard from './components/TechnicalDashboard';
 import LuckySpinWheel from './components/LuckySpinWheel';
 import SubmissionDrawer from './components/SubmissionDrawer';
 import { authAPI } from './api';
@@ -127,6 +128,10 @@ export default function App() {
 
           {activeTab === 'storage' && (
             <StorageAnalyticsView theme={theme} />
+          )}
+
+          {activeTab === 'technical' && (
+            <TechnicalDashboard user={user} theme={theme} />
           )}
 
           {activeTab === 'defaulters' && (

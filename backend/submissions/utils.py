@@ -32,13 +32,12 @@ def validate_file_metadata(original_filename, file_size, content_type=None):
 def generate_canonical_s3_key(user, task, original_filename):
     """
     Generate canonical AWS S3 key:
-    users/{userCode}/{userName}/{taskSlug}/{uniqueFileId}-{originalFileName}
+    batches/{batchCode}/users/{userId}/{taskSlug}/{uniqueFileId}-{originalFileName}
     Example:
-    users/C1255/Jagan-S-C1255/assessment/8f32a9c1-report.pdf
+    batches/BATCH_12/users/20/assessment/8f32a9c1-report.pdf
     """
-    user_code = getattr(user, 'username', f"U{user.id:03d}")
-    full_name = user.get_full_name().strip() if hasattr(user, 'get_full_name') else user_code
-    user_name_slug = slugify(f"{full_name}-{user_code}") or user_code
+    batch_code = getattr(user.batch, 'name', 'BATCH_12').replace(" ", "_").upper() if hasattr(user, 'batch') and user.batch else 'BATCH_12'
+    user_identifier = str(user.id)
     task_slug = slugify(task.title) or 'task'
     unique_file_id = uuid.uuid4().hex[:8]
     
@@ -47,7 +46,7 @@ def generate_canonical_s3_key(user, task, original_filename):
     ext = parts[1].lower() if len(parts) > 1 else ''
     clean_filename = f"{safe_name}.{ext}" if ext else safe_name
 
-    return f"users/{user_code}/{user_name_slug}/{task_slug}/{unique_file_id}-{clean_filename}"
+    return f"batches/{batch_code}/users/{user_identifier}/{task_slug}/{unique_file_id}-{clean_filename}"
 
 def generate_s3_presigned_upload_url(s3_key, content_type='application/octet-stream', expires_in=900):
     """Generate AWS S3 presigned PUT URL for direct client file upload."""

@@ -18,6 +18,7 @@ class User(AbstractUser):
     class RoleChoices(models.TextChoices):
         SUPER_ADMIN = 'SUPER_ADMIN', 'Super Admin'
         ADMIN = 'ADMIN', 'Admin'
+        TECHNICAL = 'TECHNICAL', 'Technical Support'
         USER = 'USER', 'User'
 
     email = models.EmailField(unique=True)
@@ -44,6 +45,10 @@ class User(AbstractUser):
     @property
     def is_admin_user(self):
         return self.role in [self.RoleChoices.SUPER_ADMIN, self.RoleChoices.ADMIN]
+
+    @property
+    def is_technical_user(self):
+        return self.role == self.RoleChoices.TECHNICAL or self.is_admin_user
 
 
 class UserProfile(models.Model):
