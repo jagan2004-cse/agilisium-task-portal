@@ -17,6 +17,21 @@ export default function LoginModal({ onLoginSuccess }) {
   const [showVerifyOTP, setShowVerifyOTP] = useState(false);
   const [unverifiedEmail, setUnverifiedEmail] = useState('');
 
+  const [showServerConfig, setShowServerConfig] = useState(false);
+  const [customApiUrl, setCustomApiUrl] = useState(localStorage.getItem('custom_api_url') || '');
+
+  const handleSaveCustomApiUrl = (e) => {
+    e.preventDefault();
+    if (customApiUrl.trim()) {
+      localStorage.setItem('custom_api_url', customApiUrl.trim());
+    } else {
+      localStorage.removeItem('custom_api_url');
+    }
+    setError('');
+    setShowServerConfig(false);
+    alert('Backend API server URL saved! Trying login with new server URL...');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -30,6 +45,8 @@ export default function LoginModal({ onLoginSuccess }) {
       if (err.response?.data?.email_unverified) {
         setUnverifiedEmail(err.response.data.email || email.trim().toLowerCase());
         setShowVerifyOTP(true);
+      } else if (err.response?.status === 404 || err.code === 'ERR_NETWORK') {
+        setError('Cannot reach backend API server. If deployed on Vercel, please click "Server API Settings" below to connect your backend.');
       } else {
         setError(err.response?.data?.detail || 'Invalid login credentials. Check email & password.');
       }
@@ -114,15 +131,58 @@ export default function LoginModal({ onLoginSuccess }) {
           </form>
 
           {/* Signup Trigger Link */}
-          <div className="mt-6 pt-4 border-t border-slate-800 text-center text-xs">
-            <span className="text-slate-400">Don't have an account? </span>
+          <div className="mt-6 pt-4 border-t border-slate-800 text-center text-xs flex flex-col gap-2">
+            <div>
+              <span className="text-slate-400">Don't have an account? </span>
+              <button
+                onClick={() => setShowSignup(true)}
+                className="text-[#56e3ce] font-extrabold hover:underline cursor-pointer"
+              >
+                Create Account / Sign Up
+              </button>
+            </div>
+
             <button
-              onClick={() => setShowSignup(true)}
-              className="text-[#56e3ce] font-extrabold hover:underline cursor-pointer"
+              type="button"
+              onClick={() => setShowServerConfig(!showServerConfig)}
+              className="text-[11px] text-slate-400 hover:text-cyan-300 underline cursor-pointer mt-1"
             >
-              Create Account / Sign Up
+              ⚙️ Server API Settings
             </button>
           </div>
+
+          {/* Server Config Collapsible */}
+          {showServerConfig && (
+            <form onSubmit={handleSaveCustomApiUrl} className="mt-4 p-3 rounded-xl bg-[#04121a] border border-[#18485e] space-y-2 text-xs">
+              <label className="block text-[11px] font-bold text-cyan-300">Backend API URL (Render/Cloud Service)</label>
+              <input
+                type="text"
+                value={customApiUrl}
+                onChange={(e) => setCustomApiUrl(e.target.value)}
+                placeholder="https://internsync-backend.onrender.com"
+                className="w-full px-3 py-1.5 rounded-lg bg-[#071d2b] border border-[#1d5975] text-xs text-white outline-none"
+              />
+              <div className="flex justify-end gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem('custom_api_url');
+                    setCustomApiUrl('');
+                    alert('Reset to default API URL');
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-slate-700 text-slate-300 font-semibold text-[10px]"
+                >
+                  Reset Default
+                </button>
+                <button
+                  type="submit"
+                  className="px-3 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-[10px]"
+                >
+                  Save & Connect
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
 

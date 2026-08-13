@@ -1,18 +1,29 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const getBaseURL = () => {
+  const custom = localStorage.getItem('custom_api_url');
+  if (custom && custom.trim()) {
+    let url = custom.trim();
+    if (!url.endsWith('/api') && !url.endsWith('/api/')) {
+      url = url.replace(/\/+$/, '') + '/api';
+    }
+    return url;
+  }
+  return import.meta.env.VITE_API_BASE_URL || '/api';
+};
 
-const API = axios.create({
-  baseURL: API_BASE_URL,
-});
+const API = axios.create();
 
 API.interceptors.request.use((config) => {
+  config.baseURL = getBaseURL();
   const token = localStorage.getItem('access_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 }, (error) => Promise.reject(error));
+
+export { getBaseURL };
 
 export const authAPI = {
   login: (email, password) => API.post('/auth/login/', { email, password }),
