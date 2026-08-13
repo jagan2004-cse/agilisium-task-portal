@@ -34,7 +34,18 @@ router.register(r'submissions', SubmissionViewSet, basename='submission')
 router.register(r'announcements', AnnouncementViewSet)
 router.register(r'feedback', PresentationFeedbackViewSet)
 
+from django.http import JsonResponse
+
+def root_api_status(request):
+    return JsonResponse({
+        "status": "online",
+        "system": "Agilisium InternSync API Service",
+        "api_endpoints": "/api/",
+        "admin_portal": "/admin/"
+    })
+
 urlpatterns = [
+    path('', root_api_status, name='root-status'),
     path('admin/', admin.site.urls),
     
     # Auth & Users
