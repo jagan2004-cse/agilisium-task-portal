@@ -133,16 +133,26 @@ class Command(BaseCommand):
             super_admin.set_password("Password123!")
             super_admin.save()
 
-            # 5. Create 5 Core Tasks
+            # 5. Create Categories & Tasks
             created_tasks = []
             today = datetime.date.today()
 
+            default_category, _ = Category.objects.get_or_create(
+                name="Standard Tasks",
+                defaults={"description": "Batch 12 Standard Tasks"}
+            )
+
             for t_info in CORE_TASKS:
+                task_cat, _ = Category.objects.get_or_create(
+                    name=t_info["title"],
+                    defaults={"description": t_info["description"]}
+                )
+
                 task, _ = Task.objects.get_or_create(
                     title=t_info["title"],
                     defaults={
                         "description": t_info["description"],
-                        "category": category,
+                        "category": task_cat,
                         "due_date": today,
                         "due_time": datetime.time(18, 0, 0),
                         "priority": t_info.get("priority", Task.PriorityChoices.MEDIUM),
