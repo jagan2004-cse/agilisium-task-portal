@@ -46,10 +46,11 @@ ADMINISTRATORS = [
 
 CORE_TASKS = [
     {"title": "Assessment", "description": "Assessment evidence reports, certificates & documentation.", "priority": Task.PriorityChoices.HIGH},
-    {"title": "Beyond the Curriculum", "description": "Beyond curriculum learning proof and certifications.", "priority": Task.PriorityChoices.MEDIUM},
-    {"title": "Daily Streaks", "description": "Daily learning streak screenshots & progress proof.", "priority": Task.PriorityChoices.HIGH, "is_recurring": True, "recurrence_type": Task.RecurrenceChoices.DAILY},
-    {"title": "Public Speaking", "description": "Public speaking & presentation videos/slides.", "priority": Task.PriorityChoices.MEDIUM},
+    {"title": "Duolingo,Elevate(Streaks)", "description": "Daily streak learning screenshot & progress proof.", "priority": Task.PriorityChoices.HIGH, "is_recurring": True, "recurrence_type": Task.RecurrenceChoices.DAILY},
     {"title": "Tasks", "description": "General task evidence documents & code proofs.", "priority": Task.PriorityChoices.MEDIUM},
+    {"title": "Public Speaking Topics", "description": "Public speaking presentation topics & slides.", "priority": Task.PriorityChoices.MEDIUM},
+    {"title": "Tech Updates Content", "description": "Tech updates learning summaries & articles.", "priority": Task.PriorityChoices.MEDIUM},
+    {"title": "Certification", "description": "Certification certificates & proof documents.", "priority": Task.PriorityChoices.HIGH},
 ]
 
 class Command(BaseCommand):
@@ -134,8 +135,8 @@ class Command(BaseCommand):
             super_admin.set_password("Password123!")
             super_admin.save()
 
-            # 5. Create Exact 5 Categories & Tasks
-            Category.objects.filter(name__in=["Evidence Tasks", "Core Tasks", "Standard Tasks"]).delete()
+            # 5. Create Exact Categories & Tasks
+            Category.objects.filter(name__in=["Beyond the Curriculum", "Daily Streaks", "Public Speaking", "Evidence Tasks", "Core Tasks", "Standard Tasks"]).delete()
 
             created_tasks = []
             today = datetime.date.today()
