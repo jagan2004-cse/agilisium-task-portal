@@ -42,7 +42,9 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey, the
 
       const results = await Promise.all(promises);
       const loadedTasks = results[0].data.results || results[0].data;
-      const loadedCats = results[1].data.results || results[1].data;
+      const loadedCats = (results[1].data.results || results[1].data).filter(
+        c => !['evidence tasks', 'core tasks', 'standard tasks'].includes(c.name.toLowerCase())
+      );
       const loadedUsers = results[2].data.results || results[2].data;
 
       setTasks(loadedTasks);

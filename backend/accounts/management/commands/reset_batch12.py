@@ -134,14 +134,11 @@ class Command(BaseCommand):
             super_admin.set_password("Password123!")
             super_admin.save()
 
-            # 5. Create Categories & Tasks
+            # 5. Create Exact 5 Categories & Tasks
+            Category.objects.filter(name__in=["Evidence Tasks", "Core Tasks", "Standard Tasks"]).delete()
+
             created_tasks = []
             today = datetime.date.today()
-
-            default_category, _ = Category.objects.get_or_create(
-                name="Standard Tasks",
-                defaults={"description": "Batch 12 Standard Tasks"}
-            )
 
             for t_info in CORE_TASKS:
                 task_cat, _ = Category.objects.get_or_create(
