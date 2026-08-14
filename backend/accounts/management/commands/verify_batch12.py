@@ -31,21 +31,21 @@ class Command(BaseCommand):
 
         assignments = TaskAssignment.objects.filter(user__batch=batch)
         assignments_count = assignments.count()
-        expected_assignments = total_users_count * 5
+        expected_assignments = total_users_count * tasks_count
 
         # Check duplicates
         duplicate_users = batch_users.values('email').annotate(c=Count('id')).filter(c__gt=1).count()
         duplicate_assignments = assignments.values('user', 'task').annotate(c=Count('id')).filter(c__gt=1).count()
 
-        # Users missing any of the 5 tasks
+        # Users missing any of the assigned tasks
         users_missing_tasks = 0
         for u in batch_users:
             u_tasks = TaskAssignment.objects.filter(user=u).count()
-            if u_tasks != 5:
+            if u_tasks != tasks_count:
                 users_missing_tasks += 1
 
         pass_all = True
-        if total_users_count != 27 or assignments_count != 135 or duplicate_users > 0 or duplicate_assignments > 0 or users_missing_tasks > 0:
+        if total_users_count != 27 or assignments_count < 135 or duplicate_users > 0 or duplicate_assignments > 0 or users_missing_tasks > 0:
             pass_all = False
 
         msg = (

@@ -31,13 +31,21 @@ def validate_file_metadata(original_filename, file_size, content_type=None):
 
 def generate_canonical_s3_key(user, task, original_filename):
     """
-    Generate canonical AWS S3 key:
-    batches/{batchCode}/users/{userId}/{taskSlug}/{uniqueFileId}-{originalFileName}
-    Example:
-    batches/BATCH_12/users/20/assessment/8f32a9c1-report.pdf
+    Generate canonical AWS S3 key grouped by user email/username folder:
+    batches/{batchCode}/users/{userEmailFolder}/{taskSlug}/{uniqueFileId}-{originalFileName}
+    
+    Examples:
+    batches/BATCH_12/users/Jayashree.Sankar@agilisium.com/assessment/8f32a9c1-report.pdf
+    batches/BATCH_12/users/Monisha.Ramasamy@agilisium.com/tasks/a3b14c99-proof.docx
     """
     batch_code = getattr(user.batch, 'name', 'BATCH_12').replace(" ", "_").upper() if hasattr(user, 'batch') and user.batch else 'BATCH_12'
-    user_identifier = str(user.id)
+    
+    # Use full user email (or clean email prefix) as S3 folder name for 100% human-readable bucket inspection
+    if user.email and '@' in user.email:
+        user_folder = user.email.strip().lower()
+    else:
+        user_folder = f"user_{user.id}"
+
     task_slug = slugify(task.title) or 'task'
     unique_file_id = uuid.uuid4().hex[:8]
     
@@ -46,7 +54,7 @@ def generate_canonical_s3_key(user, task, original_filename):
     ext = parts[1].lower() if len(parts) > 1 else ''
     clean_filename = f"{safe_name}.{ext}" if ext else safe_name
 
-    return f"batches/{batch_code}/users/{user_identifier}/{task_slug}/{unique_file_id}-{clean_filename}"
+    return f"batches/{batch_code}/users/{user_folder}/{task_slug}/{unique_file_id}-{clean_filename}"
 
 def generate_s3_presigned_upload_url(s3_key, content_type='application/octet-stream', expires_in=900):
     """Generate AWS S3 presigned PUT URL for direct client file upload."""
