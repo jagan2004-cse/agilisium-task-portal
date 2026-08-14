@@ -40,7 +40,8 @@ NEW_BATCH_USERS = [
 
 ADMINISTRATORS = [
     {"first": "Monisha", "last": "Ramasamy", "email": "Monisha.Ramasamy@agilisium.com"},
-    {"first": "Kannan", "last": "Vanangamudi", "email": "Kannan.Vanangamudi@agilisium.com"}
+    {"first": "Kannan", "last": "Vanangamudi", "email": "Kannan.Vanangamudi@agilisium.com"},
+    {"first": "Training", "last": "Admin", "email": "training.admin@agilisium.com"}
 ]
 
 CORE_TASKS = [
