@@ -65,7 +65,7 @@ export default function LoginModal({ onLoginSuccess }) {
 
           <div className="flex flex-col items-center justify-center mb-6 text-center">
             <AgilisiumLogo size="lg" className="mb-4" />
-            <h2 className="text-2xl font-black text-[#56e3ce] tracking-wider uppercase">INTERNSYNC</h2>
+            <h2 className="text-2xl font-black text-[#56e3ce] tracking-wider uppercase">TRACKSPRINT</h2>
             <p className="text-xs text-slate-300 mt-1">Agilisium Evidence & Sprint Tracking Portal</p>
           </div>
 

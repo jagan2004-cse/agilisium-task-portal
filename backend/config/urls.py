@@ -39,7 +39,7 @@ from django.http import JsonResponse
 def root_api_status(request):
     return JsonResponse({
         "status": "online",
-        "system": "Agilisium InternSync API Service",
+        "system": "Agilisium TrackSprint API Service",
         "api_endpoints": "/api/",
         "admin_portal": "/admin/"
     })
