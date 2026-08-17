@@ -21,6 +21,7 @@ export default function SubmissionDrawer({ assignment, onClose, onSuccess, theme
     if (allowedFmt === 'PPT') return '.ppt,.pptx';
     if (allowedFmt === 'DOC') return '.doc,.docx';
     if (allowedFmt === 'IMAGE') return '.png,.jpg,.jpeg';
+    if (allowedFmt === 'LINK') return '.url,.link,.txt,.pdf,.png,.jpg,.doc,.docx,.html';
     return '*';
   };
 
@@ -50,6 +51,12 @@ export default function SubmissionDrawer({ assignment, onClose, onSuccess, theme
       const isImg = fileName.endsWith('.png') || fileName.endsWith('.jpg') || fileName.endsWith('.jpeg') || selectedFile.type.startsWith('image/');
       if (!isImg) {
         setError('❌ Invalid format! This task strictly requires an Image screenshot (.png, .jpg, .jpeg).');
+        return false;
+      }
+    } else if (allowedFmt === 'LINK') {
+      const isLink = fileName.endsWith('.url') || fileName.endsWith('.link') || fileName.endsWith('.txt') || fileName.endsWith('.pdf') || fileName.endsWith('.png') || fileName.endsWith('.jpg') || fileName.endsWith('.doc') || fileName.endsWith('.docx') || fileName.endsWith('.html');
+      if (!isLink) {
+        setError('❌ Invalid format! This task requires a Web Link / URL file (.url, .link, .txt, or link document).');
         return false;
       }
     }

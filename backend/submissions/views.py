@@ -70,7 +70,8 @@ class GenerateUploadURLView(APIView):
                 'PDF': ['pdf'],
                 'PPT': ['ppt', 'pptx'],
                 'DOC': ['doc', 'docx'],
-                'IMAGE': ['png', 'jpg', 'jpeg']
+                'IMAGE': ['png', 'jpg', 'jpeg'],
+                'LINK': ['url', 'link', 'txt', 'pdf', 'png', 'jpg', 'doc', 'docx', 'html']
             }
             if fmt in format_map and ext not in format_map[fmt]:
                 return Response({

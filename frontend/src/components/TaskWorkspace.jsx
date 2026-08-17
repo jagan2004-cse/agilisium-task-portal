@@ -506,12 +506,13 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey, the
               {/* ALLOWED FILE FORMAT SELECTOR */}
               <div>
                 <label className="block font-semibold mb-1">Allowed File Format Option</label>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
                   {[
                     { id: 'PDF', label: 'PDF Only', ext: '.pdf', icon: '📄' },
                     { id: 'PPT', label: 'PPT Only', ext: '.ppt, .pptx', icon: '📊' },
                     { id: 'DOC', label: 'Word Doc', ext: '.doc, .docx', icon: '📝' },
                     { id: 'IMAGE', label: 'Image Only', ext: '.png, .jpg', icon: '🖼️' },
+                    { id: 'LINK', label: 'Link / URL', ext: 'http, https', icon: '🔗' },
                     { id: 'ANY', label: 'Any Format', ext: '.zip, all', icon: '📁' },
                   ].map((fmt) => {
                     const isSelected = allowedFormat === fmt.id;

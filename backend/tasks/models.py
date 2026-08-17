@@ -32,6 +32,7 @@ class Task(models.Model):
         DOC = 'DOC', 'Word Document (.doc, .docx)'
         IMAGE = 'IMAGE', 'Image Format (.png, .jpg, .jpeg)'
         PDF = 'PDF', 'PDF Document (.pdf)'
+        LINK = 'LINK', 'Web Link / URL (http, https)'
         ANY = 'ANY', 'Any Format'
 
     title = models.CharField(max_length=255)
