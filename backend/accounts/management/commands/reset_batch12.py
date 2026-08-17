@@ -46,7 +46,8 @@ ADMINISTRATORS = [
 
 CORE_TASKS = [
     {"title": "Assessment", "description": "Assessment evidence reports, certificates & documentation.", "priority": Task.PriorityChoices.HIGH},
-    {"title": "Duolingo,Elevate(Streaks)", "description": "Daily streak learning screenshot & progress proof.", "priority": Task.PriorityChoices.HIGH, "is_recurring": True, "recurrence_type": Task.RecurrenceChoices.DAILY},
+    {"title": "Duolingo Streaks", "description": "Duolingo daily streak screenshot & progress proof.", "priority": Task.PriorityChoices.HIGH, "is_recurring": True, "recurrence_type": Task.RecurrenceChoices.DAILY, "allowed_format": Task.AllowedFormatChoices.IMAGE},
+    {"title": "Elevate Streaks", "description": "Elevate daily streak screenshot & progress proof.", "priority": Task.PriorityChoices.HIGH, "is_recurring": True, "recurrence_type": Task.RecurrenceChoices.DAILY, "allowed_format": Task.AllowedFormatChoices.IMAGE},
     {"title": "Tasks", "description": "General task evidence documents & code proofs.", "priority": Task.PriorityChoices.MEDIUM},
     {"title": "Public Speaking Topics", "description": "Public speaking presentation topics & slides.", "priority": Task.PriorityChoices.MEDIUM},
     {"title": "Tech Updates Content", "description": "Tech updates learning summaries & articles.", "priority": Task.PriorityChoices.MEDIUM},
@@ -136,7 +137,7 @@ class Command(BaseCommand):
             super_admin.save()
 
             # 5. Create Exact Categories & Tasks
-            Category.objects.filter(name__in=["Beyond the Curriculum", "Daily Streaks", "Public Speaking", "Evidence Tasks", "Core Tasks", "Standard Tasks"]).delete()
+            Category.objects.filter(name__in=["Duolingo,Elevate(Streaks)", "Beyond the Curriculum", "Daily Streaks", "Public Speaking", "Evidence Tasks", "Core Tasks", "Standard Tasks"]).delete()
 
             created_tasks = []
             today = datetime.date.today()
@@ -159,7 +160,7 @@ class Command(BaseCommand):
                         "is_recurring": t_info.get("is_recurring", False),
                         "recurrence_type": t_info.get("recurrence_type", Task.RecurrenceChoices.NONE),
                         "approval_required": True,
-                        "allowed_format": Task.AllowedFormatChoices.ANY
+                        "allowed_format": t_info.get("allowed_format", Task.AllowedFormatChoices.ANY)
                     }
                 )
                 created_tasks.append(task)

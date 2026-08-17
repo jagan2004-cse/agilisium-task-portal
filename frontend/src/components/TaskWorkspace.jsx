@@ -42,7 +42,7 @@ export default function TaskWorkspace({ user, onOpenSubmitModal, refreshKey, the
 
       const results = await Promise.all(promises);
       const loadedTasks = results[0].data.results || results[0].data;
-      const excludedCats = ['evidence tasks', 'core tasks', 'standard tasks', 'beyond the curriculum', 'daily streaks', 'public speaking'];
+      const excludedCats = ['evidence tasks', 'core tasks', 'standard tasks', 'beyond the curriculum', 'daily streaks', 'public speaking', 'duolingo,elevate(streaks)'];
       const loadedCats = (results[1].data.results || results[1].data).filter(
         c => !excludedCats.includes(c.name.toLowerCase().trim())
       );
