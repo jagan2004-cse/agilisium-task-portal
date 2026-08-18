@@ -136,34 +136,11 @@ class Command(BaseCommand):
             super_admin.set_password("Password123!")
             super_admin.save()
 
-            # 5. Create Exact Categories & Tasks
-            Category.objects.filter(name__in=["Duolingo,Elevate(Streaks)", "Beyond the Curriculum", "Daily Streaks", "Public Speaking", "Evidence Tasks", "Core Tasks", "Standard Tasks"]).delete()
-
-            created_tasks = []
-            today = datetime.date.today()
-
-            for t_info in CORE_TASKS:
-                task_cat, _ = Category.objects.get_or_create(
-                    name=t_info["title"],
-                    defaults={"description": t_info["description"]}
-                )
-
-                task, _ = Task.objects.get_or_create(
-                    title=t_info["title"],
-                    defaults={
-                        "description": t_info["description"],
-                        "category": task_cat,
-                        "due_date": today,
-                        "due_time": datetime.time(18, 0, 0),
-                        "priority": t_info.get("priority", Task.PriorityChoices.MEDIUM),
-                        "created_by": super_admin,
-                        "is_recurring": t_info.get("is_recurring", False),
-                        "recurrence_type": t_info.get("recurrence_type", Task.RecurrenceChoices.NONE),
-                        "approval_required": True,
-                        "allowed_format": t_info.get("allowed_format", Task.AllowedFormatChoices.ANY)
-                    }
-                )
-                created_tasks.append(task)
+            # 5. Do not seed any default tasks - workspace starts 100% clean
+            # Only tasks explicitly created by Admins will exist in the portal.
+            Task.objects.all().delete()
+            Category.objects.all().delete()
+            existing_tasks = list(Task.objects.all())
 
             # 6. Create 27 Batch 12 Users & Assign 5 Tasks (27 x 5 = 135)
             created_b12_users = []
@@ -186,8 +163,8 @@ class Command(BaseCommand):
 
                 created_b12_users.append(u_obj)
 
-                # Assign 5 tasks
-                for task in created_tasks:
+                # Assign existing admin-created tasks
+                for task in existing_tasks:
                     TaskAssignment.objects.create(
                         task=task,
                         user=u_obj,
@@ -201,7 +178,7 @@ class Command(BaseCommand):
             f"New Batch 12 Users created: {len(created_b12_users)}\n"
             f"Technical Users created: {sum(1 for u in created_b12_users if u.role == User.RoleChoices.TECHNICAL)}\n"
             f"Administrators created: {len(ADMINISTRATORS)}\n"
-            f"Tasks: {len(created_tasks)}\n"
+            f"Tasks: {len(existing_tasks)}\n"
             f"Assignments created: {total_assignments_created}\n"
             f"=========================================================\n"
         ))

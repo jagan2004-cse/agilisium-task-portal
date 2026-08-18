@@ -9,7 +9,7 @@ const getBaseURL = () => {
     }
     return url;
   }
-  return import.meta.env.VITE_API_BASE_URL || '/api';
+  return import.meta.env.VITE_API_BASE_URL || 'https://internsync-backend-dofy.onrender.com/api';
 };
 
 const API = axios.create();
