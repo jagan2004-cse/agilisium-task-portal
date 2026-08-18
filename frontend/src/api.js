@@ -66,8 +66,9 @@ export const submissionsAPI = {
     if (token) params.push(`token=${token}`);
     if (taskId) params.push(`task_id=${taskId}`);
     if (batchId) params.push(`batch_id=${batchId}`);
-    const url = `/submissions/bulk-download/?${params.join('&')}`;
-    window.open(`/api${url}`, '_blank');
+    const path = `/submissions/bulk-download/?${params.join('&')}`;
+    const base = getBaseURL().replace(/\/+$/, '');
+    window.open(`${base}${path}`, '_blank');
   }
 };
 
@@ -98,11 +99,15 @@ export const codeReviewAPI = {
 export const rotationAPI = codeReviewAPI;
 
 export const defaultersReportsAPI = {
-  getDefaulters: () => API.get('/defaulters/'),
-  exportExcel: (type = 'defaulters') => {
+  getDefaulters: (params) => API.get('/defaulters/', { params }),
+  exportExcel: (type = 'defaulters', taskId = null) => {
     const token = localStorage.getItem('access_token');
-    const url = `/reports/export-excel/?type=${type}&token=${token}`;
-    window.open(`/api${url}`, '_blank');
+    const params = [`type=${type}`];
+    if (token) params.push(`token=${token}`);
+    if (taskId) params.push(`task_id=${taskId}`);
+    const path = `/reports/export-excel/?${params.join('&')}`;
+    const base = getBaseURL().replace(/\/+$/, '');
+    window.open(`${base}${path}`, '_blank');
   }
 };
 
