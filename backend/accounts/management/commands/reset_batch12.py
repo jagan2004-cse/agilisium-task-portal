@@ -20,7 +20,7 @@ NEW_BATCH_USERS = [
     {"first": "Lingesh", "last": "Thirumalai", "email": "Lingesh.Thirumalai@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Jeevanantham", "last": "Balamurugan", "email": "Jeevanantham.Balamurugan@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Kethireddy", "last": "Sivani", "email": "Kethireddy.Sivani@agilisium.com", "role": User.RoleChoices.USER},
-    {"first": "Janarthanan", "last": "Karuppasamy", "email": "Janarthanan.Karuppasamy@agilisium.com", "role": User.RoleChoices.USER},
+    {"first": "Janarthanan", "last": "Karuppusamy", "email": "Janarthanan.Karuppusamy@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "AnanyaSree", "last": "Sridharan", "email": "AnanyaSree.Sridharan@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Aruna", "last": "Kiruthija", "email": "Aruna.Kiruthija@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Shandrakala", "last": "Nagendran", "email": "Shandrakala.Nagendran@agilisium.com", "role": User.RoleChoices.USER},

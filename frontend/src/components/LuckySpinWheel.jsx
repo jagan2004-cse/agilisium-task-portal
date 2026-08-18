@@ -16,7 +16,7 @@ const DEFAULT_27_NAMES = [
   "Lingesh Thirumalai",
   "Jeevanantham Balamurugan",
   "Kethireddy Sivani",
-  "Janarthanan Karuppasamy",
+  "Janarthanan Karuppusamy",
   "AnanyaSree Sridharan",
   "Aruna Kiruthija",
   "Shandrakala Nagendran",
