@@ -40,14 +40,16 @@ class GenerateUploadURLView(APIView):
         if not is_valid:
             return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Lookup Task & Assignment
+        # Lookup Task & Assignment safely for request.user
         task = None
         assignment = None
 
         if assignment_id:
-            assignment = TaskAssignment.objects.filter(id=assignment_id).first()
-            if assignment:
-                task = assignment.task
+            assignment_obj = TaskAssignment.objects.filter(id=assignment_id).first()
+            if assignment_obj:
+                task = assignment_obj.task
+                if assignment_obj.user == request.user or request.user.is_admin_user:
+                    assignment = assignment_obj
 
         if not task and task_id:
             task = Task.objects.filter(id=task_id).first()
@@ -55,12 +57,9 @@ class GenerateUploadURLView(APIView):
         if not task:
             return Response({'detail': 'Task not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Ensure user assignment exists or auto-create for assigned participant
+        # Ensure assignment exists for request.user
         if not assignment:
             assignment, _ = TaskAssignment.objects.get_or_create(task=task, user=request.user)
-
-        if not request.user.is_admin_user and assignment.user != request.user:
-            return Response({'detail': 'Permission denied. You can only upload evidence for your own tasks.'}, status=status.HTTP_403_FORBIDDEN)
 
         # Check allowed file format restriction on Task
         if task.allowed_format and task.allowed_format != 'ANY':
@@ -106,21 +105,22 @@ class ConfirmUploadView(APIView):
             return Response({'detail': 's3_key and original_filename are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         assignment = None
+        task = None
         if assignment_id:
-            assignment = TaskAssignment.objects.filter(id=assignment_id).first()
+            assignment_obj = TaskAssignment.objects.filter(id=assignment_id).first()
+            if assignment_obj:
+                task = assignment_obj.task
+                if assignment_obj.user == request.user or request.user.is_admin_user:
+                    assignment = assignment_obj
 
-        if not assignment and task_id:
-            assignment = TaskAssignment.objects.filter(task_id=task_id, user=request.user).first()
-            if not assignment:
-                task = Task.objects.filter(id=task_id).first()
-                if task:
-                    assignment, _ = TaskAssignment.objects.get_or_create(task=task, user=request.user)
+        if not task and task_id:
+            task = Task.objects.filter(id=task_id).first()
+
+        if not task:
+            return Response({'detail': 'Task not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         if not assignment:
-            return Response({'detail': 'Task assignment not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-        if not request.user.is_admin_user and assignment.user != request.user:
-            return Response({'detail': 'Permission denied.'}, status=status.HTTP_403_FORBIDDEN)
+            assignment, _ = TaskAssignment.objects.get_or_create(task=task, user=request.user)
 
         task = assignment.task
 
@@ -236,23 +236,22 @@ class SubmitTaskView(APIView):
             return Response({'detail': 'assignment_id (or task_id) and file are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         assignment = None
+        task = None
         if assignment_id:
-            assignment = TaskAssignment.objects.filter(id=assignment_id).first()
+            assignment_obj = TaskAssignment.objects.filter(id=assignment_id).first()
+            if assignment_obj:
+                task = assignment_obj.task
+                if assignment_obj.user == request.user or request.user.is_admin_user:
+                    assignment = assignment_obj
 
-        if not assignment and task_id:
-            assignment = TaskAssignment.objects.filter(task_id=task_id, user=request.user).first()
-            if not assignment:
-                try:
-                    target_task = Task.objects.get(id=task_id)
-                    assignment, _ = TaskAssignment.objects.get_or_create(task=target_task, user=request.user)
-                except Task.DoesNotExist:
-                    pass
+        if not task and task_id:
+            task = Task.objects.filter(id=task_id).first()
+
+        if not task:
+            return Response({'detail': 'Task not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         if not assignment:
-            return Response({'detail': 'Task assignment not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-        if not request.user.is_admin_user and assignment.user != request.user:
-            return Response({'detail': 'Permission denied.'}, status=status.HTTP_403_FORBIDDEN)
+            assignment, _ = TaskAssignment.objects.get_or_create(task=task, user=request.user)
 
         file_name = uploaded_file.name
         file_type = uploaded_file.content_type or 'application/octet-stream'
