@@ -15,7 +15,7 @@ import {
 
 export default function GlassSidebar({ activeTab, setActiveTab, user, onLogout, theme = localStorage.getItem('theme') || 'dark' }) {
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'dashboard', label: 'Code Review Dashboard', icon: LayoutDashboard },
     { id: 'wheel', label: 'Lucky Spin Wheel', icon: Dices },
     { id: 'tasks', label: 'Task Workspace', icon: CheckSquare },
     { id: 'rotation', label: 'Code Review Tracker', icon: BookOpen },

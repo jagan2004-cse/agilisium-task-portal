@@ -66,7 +66,7 @@ export default function AdminDashboard({ onNavigate, theme = localStorage.getIte
 
   const totalAssignedUsers = selectedTaskId
     ? filteredAssignments.length
-    : 25; // Default batch count
+    : 27; // Batch 12 user count
 
   const completedCount = filteredAssignments.filter(a => a.status === 'APPROVED' || a.status === 'COMPLETED').length;
   const pendingApprovalCount = filteredAssignments.filter(a => a.status === 'PENDING_APPROVAL').length;
@@ -90,7 +90,7 @@ export default function AdminDashboard({ onNavigate, theme = localStorage.getIte
         isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
       }`}>
         <div>
-          <h2 className={`text-2xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>Dashboard View</h2>
+          <h2 className={`text-2xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>Code Review Dashboard</h2>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
