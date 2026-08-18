@@ -229,7 +229,7 @@ export default function PresentationRotationWorkspace({ user, theme = localStora
         isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#09222f] border-[#144052]'
       }`}>
         <div>
-          <h2 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>Data Engineering Code Review Dashboard</h2>
+          <h2 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>Code Review Dashboard</h2>
         </div>
 
         {user?.role !== 'USER' && (
