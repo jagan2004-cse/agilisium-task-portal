@@ -136,33 +136,10 @@ class Command(BaseCommand):
             super_admin.set_password("Password123!")
             super_admin.save()
 
-            # 5. Get or Create Core Tasks & Categories (Preserving all existing admin tasks)
-            created_tasks = []
-            today = datetime.date.today()
-
-            for t_info in CORE_TASKS:
-                task_cat, _ = Category.objects.get_or_create(
-                    name=t_info["title"],
-                    defaults={"description": t_info["description"]}
-                )
-
-                task, _ = Task.objects.get_or_create(
-                    title=t_info["title"],
-                    defaults={
-                        "description": t_info["description"],
-                        "category": task_cat,
-                        "due_date": today,
-                        "due_time": datetime.time(18, 0, 0),
-                        "priority": t_info.get("priority", Task.PriorityChoices.MEDIUM),
-                        "created_by": super_admin,
-                        "is_recurring": t_info.get("is_recurring", False),
-                        "recurrence_type": t_info.get("recurrence_type", Task.RecurrenceChoices.NONE),
-                        "approval_required": True,
-                        "allowed_format": t_info.get("allowed_format", Task.AllowedFormatChoices.ANY)
-                    }
-                )
-                created_tasks.append(task)
-
+            # 5. Purge all default tasks & categories so workspace starts 100% clean with 0 tasks
+            # Only tasks explicitly created by Admins will exist in the portal.
+            Task.objects.all().delete()
+            Category.objects.all().delete()
             all_tasks_to_assign = list(Task.objects.all())
 
             # 6. Create 27 Batch 12 Users & Assign Tasks
