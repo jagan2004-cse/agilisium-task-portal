@@ -100,10 +100,10 @@ export default function TechnicalDashboard({ user, theme = 'dark' }) {
             <Database className="w-5 h-5 text-cyan-400" />
           </div>
           <p className={`text-xl font-black mt-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>
-            HEALTHY
+            HEALTHY (PostgreSQL)
           </p>
           <p className="text-[11px] text-cyan-300 mt-1">Batch 12 Users: {usersCount}</p>
-          <p className="text-[10px] text-slate-400">Assignments: {assignmentsCount} / 135</p>
+          <p className="text-[10px] text-slate-400">Engine: Managed Cloud PostgreSQL (SSD)</p>
         </div>
 
         {/* Upload Diagnostics */}
