@@ -41,8 +41,22 @@ export default function App() {
         const res = await authAPI.getProfile();
         setUser(res.data);
       } catch (err) {
-        localStorage.removeItem('access_token');
-        setUser(null);
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('access_token');
+          setUser(null);
+        } else {
+          // If server is cold-starting or recovering from sleep, retry after 3.5 seconds
+          try {
+            await new Promise(r => setTimeout(r, 3500));
+            const retryRes = await authAPI.getProfile();
+            setUser(retryRes.data);
+          } catch (retryErr) {
+            if (retryErr.response && retryErr.response.status === 401) {
+              localStorage.removeItem('access_token');
+              setUser(null);
+            }
+          }
+        }
       }
     }
     setLoading(false);

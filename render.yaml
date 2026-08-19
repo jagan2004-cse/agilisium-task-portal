@@ -1,3 +1,8 @@
+databases:
+  - name: tracksprint-db
+    databaseName: tracksprint
+    user: tracksprint_user
+
 services:
   # Backend Web Service
   - type: web
@@ -13,6 +18,10 @@ services:
         value: "False"
       - key: ALLOWED_HOSTS
         value: "*"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tracksprint-db
+          property: connectionString
       - key: AWS_STORAGE_BUCKET_NAME
         value: agilisium-task-portal-evidence
       - key: AWS_ACCESS_KEY_ID
