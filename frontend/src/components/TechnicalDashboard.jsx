@@ -17,8 +17,8 @@ import { storageAPI, logsAPI, authAPI, tasksAPI } from '../api';
 export default function TechnicalDashboard({ user, theme = 'dark' }) {
   const [analytics, setAnalytics] = useState(null);
   const [logs, setLogs] = useState([]);
-  const [usersCount, setUsersCount] = useState(27);
-  const [assignmentsCount, setAssignmentsCount] = useState(135);
+  const [usersCount, setUsersCount] = useState(28);
+  const [assignmentsCount, setAssignmentsCount] = useState(140);
   const [s3Status, setS3Status] = useState({ connected: true, bucket: 'agilisium-task-portal-evidence', region: 'eu-north-1' });
   const [loading, setLoading] = useState(true);
 
@@ -38,8 +38,8 @@ export default function TechnicalDashboard({ user, theme = 'dark' }) {
 
       setAnalytics(storageRes.data);
       setLogs(logsRes.data.results || logsRes.data);
-      setUsersCount((usersRes.data.results || usersRes.data).length || 27);
-      setAssignmentsCount((assignRes.data.results || assignRes.data).length || 135);
+      setUsersCount((usersRes.data.results || usersRes.data).length || 28);
+      setAssignmentsCount((assignRes.data.results || assignRes.data).length || 140);
     } catch (err) {
       console.error('Failed to load technical dashboard data', err);
     } finally {

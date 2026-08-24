@@ -66,7 +66,7 @@ export default function AdminDashboard({ onNavigate, theme = localStorage.getIte
 
   const totalAssignedUsers = selectedTaskId
     ? filteredAssignments.length
-    : 27; // Batch 12 user count
+    : 28; // Batch 12 user count
 
   const completedCount = filteredAssignments.filter(a => a.status === 'APPROVED' || a.status === 'COMPLETED').length;
   const pendingApprovalCount = filteredAssignments.filter(a => a.status === 'PENDING_APPROVAL').length;

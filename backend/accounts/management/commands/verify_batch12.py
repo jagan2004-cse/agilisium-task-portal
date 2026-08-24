@@ -45,16 +45,16 @@ class Command(BaseCommand):
                 users_missing_tasks += 1
 
         pass_all = True
-        if total_users_count != 27 or assignments_count != expected_assignments or duplicate_users > 0 or duplicate_assignments > 0 or users_missing_tasks > 0:
+        if total_users_count != 28 or assignments_count != expected_assignments or duplicate_users > 0 or duplicate_assignments > 0 or users_missing_tasks > 0:
             pass_all = False
 
         msg = (
             "=========================================================\n"
             "                 BATCH 12 VERIFICATION                   \n"
             "=========================================================\n"
-            f"Users: {total_users_count} {'[PASS]' if total_users_count == 27 else '[FAIL] (Expected 27)'}\n"
+            f"Users: {total_users_count} {'[PASS]' if total_users_count == 28 else '[FAIL] (Expected 28)'}\n"
             f"Technical Users: {technical_count} [PASS]\n"
-            f"Standard Users: {standard_count} {'[PASS]' if standard_count == 27 else '[FAIL] (Expected 27)'}\n"
+            f"Standard Users: {standard_count} {'[PASS]' if standard_count == 28 else '[FAIL] (Expected 28)'}\n"
             f"Administrators: {admin_count} {'[PASS]' if admin_count >= 2 else '[FAIL] (Expected >= 2)'}\n"
             f"Tasks: {tasks_count} [PASS]\n"
             f"Expected assignments: {expected_assignments}\n"

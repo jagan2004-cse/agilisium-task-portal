@@ -36,6 +36,7 @@ NEW_BATCH_USERS = [
     {"first": "Bhuvana", "last": "T", "email": "Bhuvana.Thangasamy@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Shiva", "last": "Prashanth", "email": "ShivaPrashanth.Elumalai@agilisium.com", "role": User.RoleChoices.USER},
     {"first": "Sanjay", "last": "Vijaykumar", "email": "Sanjay.Vijaykumar@agilisium.com", "role": User.RoleChoices.USER},
+    {"first": "Umesh", "last": "Kumar", "email": "Umesh.Kumar@agilisium.com", "role": User.RoleChoices.USER},
 ]
 
 ADMINISTRATORS = [

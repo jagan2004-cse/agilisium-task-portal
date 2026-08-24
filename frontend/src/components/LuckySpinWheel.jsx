@@ -4,7 +4,7 @@ import {
   Users, History, Trash2, Sparkles
 } from 'lucide-react';
 
-const DEFAULT_27_NAMES = [
+const DEFAULT_28_NAMES = [
   "Jayashree Sankar",
   "Srinithi Santhoshkumar",
   "Nithish Balaji",
@@ -31,7 +31,8 @@ const DEFAULT_27_NAMES = [
   "Bhuvana T",
   "Shiva Prashanth",
   "Sanjay Vijaykumar",
-  "Yavvna Lakshmi J"
+  "Yavvna Lakshmi J",
+  "Umesh Kumar"
 ];
 
 const SLICE_COLORS = [
@@ -43,8 +44,8 @@ const SLICE_COLORS = [
 ];
 
 export default function LuckySpinWheel({ theme = localStorage.getItem('theme') || 'dark' }) {
-  const [namesText, setNamesText] = useState(DEFAULT_27_NAMES.join('\n'));
-  const [participants, setParticipants] = useState(DEFAULT_27_NAMES);
+  const [namesText, setNamesText] = useState(DEFAULT_28_NAMES.join('\n'));
+  const [participants, setParticipants] = useState(DEFAULT_28_NAMES);
   const isLight = theme === 'light';
   
   // Controls & State
@@ -93,10 +94,10 @@ export default function LuckySpinWheel({ theme = localStorage.getItem('theme') |
       ctx.fillStyle = '#38bdf8';
       ctx.font = 'bold 15px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('🎉 All 27 participants have been selected!', centerX, centerY - 10);
+      ctx.fillText('🎉 All 28 participants have been selected!', centerX, centerY - 10);
       ctx.fillStyle = '#94a3b8';
       ctx.font = '12px Inter, sans-serif';
-      ctx.fillText('Click "Reset 27 Names" to start a new session.', centerX, centerY + 15);
+      ctx.fillText('Click "Reset 28 Names" to start a new session.', centerX, centerY + 15);
       return;
     }
 
@@ -241,8 +242,8 @@ export default function LuckySpinWheel({ theme = localStorage.getItem('theme') |
   };
 
   const handleConfirmReset = () => {
-    setParticipants(DEFAULT_27_NAMES);
-    setNamesText(DEFAULT_27_NAMES.join('\n'));
+    setParticipants(DEFAULT_28_NAMES);
+    setNamesText(DEFAULT_28_NAMES.join('\n'));
     setWinner(null);
     setWinnerIndexState(null);
     setWinnerHistory([]);
@@ -260,7 +261,7 @@ export default function LuckySpinWheel({ theme = localStorage.getItem('theme') |
             <Sparkles className="w-5 h-5 text-teal-600" />
             <h1 className={`text-2xl font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>Lucky Wheel</h1>
           </div>
-          <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Spin to randomly select all 27 people one by one until everyone is picked.</p>
+          <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Spin to randomly select all 28 people one by one until everyone is picked.</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -271,7 +272,7 @@ export default function LuckySpinWheel({ theme = localStorage.getItem('theme') |
             }`}
           >
             <RotateCcw className="w-4 h-4" />
-            <span>Reset 27 Names</span>
+            <span>Reset 28 Names</span>
           </button>
         </div>
       </div>
@@ -451,13 +452,13 @@ export default function LuckySpinWheel({ theme = localStorage.getItem('theme') |
 
             <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">🎉 WINNER SELECTED 🎉</span>
             <h2 className="text-3xl font-black text-white tracking-tight">{winner}</h2>
-            <p className="text-xs text-cyan-300 font-semibold">{winnerHistory.length} of 27 Selected</p>
+            <p className="text-xs text-cyan-300 font-semibold">{winnerHistory.length} of 28 Selected</p>
 
             <button
               onClick={() => setWinner(null)}
               className="mt-4 w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 font-bold text-sm text-white shadow-xl shadow-cyan-500/30 cursor-pointer hover:from-cyan-400"
             >
-              {participants.length === 0 ? '🎉 All 27 People Picked!' : 'Continue Spinning Next Person'}
+              {participants.length === 0 ? '🎉 All 28 People Picked!' : 'Continue Spinning Next Person'}
             </button>
           </div>
         </div>
@@ -468,7 +469,7 @@ export default function LuckySpinWheel({ theme = localStorage.getItem('theme') |
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
           <div className="w-full max-w-md glass-card rounded-3xl p-6 border border-white/20 shadow-2xl space-y-4 text-xs">
             <h3 className="text-base font-bold text-white">Reset Wheel?</h3>
-            <p className="text-slate-300">This will restore all 27 participant names to the wheel and clear winner history.</p>
+            <p className="text-slate-300">This will restore all 28 participant names to the wheel and clear winner history.</p>
 
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
               <button
