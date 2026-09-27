@@ -5,7 +5,6 @@ from django.conf import settings
 from django.db import transaction
 from accounts.models import User, Batch
 from tasks.models import Task, TaskAssignment, Category
-from submissions.models import Submission
 from accounts.views import CustomTokenObtainPairSerializer
 
 NEW_BATCH_USERS = [
@@ -88,54 +87,49 @@ class Command(BaseCommand):
         )
 
         with transaction.atomic():
-            # 3. Purge All Existing Evidence, Assignments & Users
-            all_subs = Submission.objects.all()
-            sub_count = all_subs.count()
-            all_subs.delete()
+            # 3. Safe: Do NOT delete existing data. Only add missing accounts.
+            existing_count = User.objects.count()
+            self.stdout.write(self.style.NOTICE(f"Current user count: {existing_count}. Adding any missing accounts (non-destructive)."))
 
-            all_assigns = TaskAssignment.objects.all()
-            assign_count = all_assigns.count()
-            all_assigns.delete()
-
-            all_users = User.objects.all()
-            user_count = all_users.count()
-            all_users.delete()
-
-            self.stdout.write(self.style.SUCCESS(f"Purged {user_count} old users, {assign_count} task assignments, and {sub_count} evidence records."))
-
-            # 4. Create Administrators
+            # 4. Create Administrators (get_or_create - non-destructive)
             admin_users = []
             for adm in ADMINISTRATORS:
                 username = adm["email"].split('@')[0]
-                admin_obj = User.objects.create(
+                admin_obj, created = User.objects.get_or_create(
                     email=adm["email"],
-                    username=username,
-                    first_name=adm["first"],
-                    last_name=adm["last"],
-                    company="Agilisium",
-                    role=User.RoleChoices.ADMIN,
-                    is_staff=True,
-                    is_superuser=True,
-                    is_email_verified=True
+                    defaults={
+                        "username": username,
+                        "first_name": adm["first"],
+                        "last_name": adm["last"],
+                        "company": "Agilisium",
+                        "role": User.RoleChoices.ADMIN,
+                        "is_staff": True,
+                        "is_superuser": True,
+                        "is_email_verified": True
+                    }
                 )
-                admin_obj.set_password("Admin123!")
-                admin_obj.save()
+                if created:
+                    admin_obj.set_password("Admin123!")
+                    admin_obj.save()
                 admin_users.append(admin_obj)
 
             # Create Superadmin admin@agilisium.com
-            super_admin = User.objects.create(
+            super_admin, sa_created = User.objects.get_or_create(
                 email="admin@agilisium.com",
-                username="admin",
-                first_name="Agilisium",
-                last_name="Admin",
-                company="Agilisium",
-                role=User.RoleChoices.SUPER_ADMIN,
-                is_staff=True,
-                is_superuser=True,
-                is_email_verified=True
+                defaults={
+                    "username": "admin",
+                    "first_name": "Agilisium",
+                    "last_name": "Admin",
+                    "company": "Agilisium",
+                    "role": User.RoleChoices.SUPER_ADMIN,
+                    "is_staff": True,
+                    "is_superuser": True,
+                    "is_email_verified": True
+                }
             )
-            super_admin.set_password("Password123!")
-            super_admin.save()
+            if sa_created:
+                super_admin.set_password("Password123!")
+                super_admin.save()
 
             # 5. Turn off preseeded tasks - remove preseeded core tasks
             core_titles = [t["title"] for t in CORE_TASKS]

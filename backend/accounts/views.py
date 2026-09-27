@@ -73,22 +73,13 @@ class SystemCheckView(APIView):
             total_users = User.objects.count()
             monisha = User.objects.filter(email__iexact='Monisha.Ramasamy@agilisium.com').first()
             admin_account = User.objects.filter(email__iexact='admin@agilisium.com').first()
-            
-            # Auto-repair: Ensure users exist in production PostgreSQL
-            if not monisha or not admin_account or total_users < 28:
-                from django.core.management import call_command
-                call_command('reset_batch12', confirm=True)
-                total_users = User.objects.count()
-                monisha = User.objects.filter(email__iexact='Monisha.Ramasamy@agilisium.com').first()
-
-            monisha_pass_ok = monisha.check_password('Admin123!') if monisha else False
 
             return Response({
                 'status': 'OK',
                 'total_users': total_users,
                 'monisha_exists': bool(monisha),
                 'monisha_email': monisha.email if monisha else None,
-                'monisha_pass_valid': monisha_pass_ok
+                'admin_exists': bool(admin_account),
             })
         except Exception as e:
             return Response({'status': 'ERROR', 'error': str(e), 'traceback': traceback.format_exc()}, status=500)
@@ -98,11 +89,6 @@ class LoginView(APIView):
 
     def post(self, request):
         try:
-            # Auto-seed users if database is empty on cold start
-            if User.objects.count() < 28:
-                from django.core.management import call_command
-                call_command('reset_batch12', confirm=True)
-
             serializer = CustomTokenObtainPairSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
                 return Response(serializer.validated_data, status=status.HTTP_200_OK)
