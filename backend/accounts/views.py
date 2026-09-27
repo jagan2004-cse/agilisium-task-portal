@@ -63,14 +63,22 @@ class CustomTokenObtainPairSerializer(serializers.Serializer):
             'user': user_serializer.data
         }
 
+import traceback
+
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        serializer = CustomTokenObtainPairSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            return Response(serializer.validated_data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = CustomTokenObtainPairSerializer(data=request.data, context={'request': request})
+            if serializer.is_valid():
+                return Response(serializer.validated_data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                'detail': f'Server Error: {str(e)}',
+                'traceback': traceback.format_exc()
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class SignupView(APIView):
