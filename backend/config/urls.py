@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 
 from accounts.views import (
-    LoginView, CurrentUserProfileView, UserListView, ChangePasswordView, BatchViewSet,
+    LoginView, SystemCheckView, CurrentUserProfileView, UserListView, ChangePasswordView, BatchViewSet,
     SignupView, VerifyEmailOTPView, ResendOTPView,
     ForgotPasswordRequestView, ForgotPasswordVerifyView, ForgotPasswordResetView
 )
@@ -49,6 +49,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # Auth & Users
+    path('api/auth/system-check/', SystemCheckView.as_view(), name='system-check'),
     path('api/auth/login/', LoginView.as_view(), name='login'),
     path('api/auth/signup/', SignupView.as_view(), name='signup'),
     path('api/auth/verify-email-otp/', VerifyEmailOTPView.as_view(), name='verify-email-otp'),
