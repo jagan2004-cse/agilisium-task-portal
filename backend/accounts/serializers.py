@@ -20,7 +20,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer(read_only=True)
-    batch_name = serializers.CharField(source='batch.name', read_only=True)
+    batch_name = serializers.SerializerMethodField()
     full_name = serializers.SerializerMethodField()
 
     class Meta:
@@ -33,6 +33,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_full_name(self, obj):
         return obj.get_full_name()
+
+    def get_batch_name(self, obj):
+        return obj.batch.name if obj and obj.batch else None
 
 
 class SignupSerializer(serializers.ModelSerializer):
