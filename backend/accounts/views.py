@@ -16,29 +16,52 @@ from logs.models import ActivityLog
 
 from django.db.models import Q
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class CustomTokenObtainPairSerializer(serializers.Serializer):
+    email = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
+    password = serializers.CharField(write_only=True)
+
     def validate(self, attrs):
-        login_input = attrs.get(self.username_field) or self.initial_data.get('email') or self.initial_data.get('username')
+        login_input = (attrs.get('email') or attrs.get('username') or self.initial_data.get('email') or self.initial_data.get('username') or '').strip()
         password = attrs.get('password')
 
-        if login_input and password:
-            user_obj = User.objects.filter(Q(email__iexact=login_input) | Q(username__iexact=login_input)).first()
-            if user_obj and user_obj.check_password(password):
-                attrs[self.username_field] = getattr(user_obj, self.username_field, user_obj.username)
+        if not login_input or not password:
+            raise serializers.ValidationError({'detail': 'No active account found with the given credentials'})
 
-        data = super().validate(attrs)
-        
+        user_obj = User.objects.filter(Q(email__iexact=login_input) | Q(username__iexact=login_input)).first()
+        if not user_obj or not user_obj.check_password(password):
+            raise serializers.ValidationError({'detail': 'No active account found with the given credentials'})
+
+        if not user_obj.is_active:
+            raise serializers.ValidationError({'detail': 'User account is disabled.'})
+
         # Check email verification status for standard users
-        if not self.user.is_email_verified and not self.user.is_admin_user:
+        if not user_obj.is_email_verified and not user_obj.is_admin_user:
             raise serializers.ValidationError({
                 'detail': 'Your email address is not verified. Please verify your email using the OTP sent to your Outlook account.',
                 'email_unverified': True,
-                'email': self.user.email
+                'email': user_obj.email
             })
 
-        user_serializer = UserSerializer(self.user)
-        data['user'] = user_serializer.data
-        return data
+        refresh = RefreshToken.for_user(user_obj)
+        user_serializer = UserSerializer(user_obj)
+
+        try:
+            ActivityLog.objects.create(
+                user=user_obj,
+                action='USER_LOGGED_IN',
+                details=f"User '{user_obj.email}' logged in successfully."
+            )
+        except Exception:
+            pass
+
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user': user_serializer.data
+        }
 
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
